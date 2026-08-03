@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Terminal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell-page">
+    <section class="terminal-frame" aria-label="Portfolio terminal">
+      <header class="terminal-header">
+        <div class="window-buttons" aria-hidden="true">
+          <span class="button close"></span>
+          <span class="button minimize"></span>
+          <span class="button maximize"></span>
+        </div>
+        <div class="terminal-meta">
+          <span>portfolio-shell</span>
+          <span class="meta-divider"></span>
+          <span id="session-status">booting...</span>
+        </div>
+      </header>
+
+      <div class="terminal-body" id="terminal-shell">
+        <div class="terminal-output" id="terminal-output" aria-live="polite"></div>
+
+        <form class="prompt-row" id="terminal-form" autocomplete="off">
+          <label class="prompt-label" for="terminal-input">
+            <span class="prompt-user">visitor@portfolio</span>
+            <span>:</span>
+            <span class="prompt-path" id="prompt-path">~</span>
+            <span>$</span>
+          </label>
+          <input
+            id="terminal-input"
+            class="terminal-input"
+            type="text"
+            autocapitalize="off"
+            autocomplete="off"
+            autocorrect="off"
+            spellcheck="false"
+            aria-label="Terminal command input"
+          >
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

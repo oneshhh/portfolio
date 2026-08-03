@@ -1,0 +1,294 @@
+:root {
+  --bg: #000000;
+  --panel: #000000;
+  --panel-border: #1f1f1f;
+  --text-main: #f4f4f4;
+  --text-soft: #bdbdbd;
+  --accent: #5fd7ff;
+  --accent-strong: #87ff5f;
+  --danger: #ff5f5f;
+  --warning: #ffd75f;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-main);
+  font-family: "Cascadia Code", "IBM Plex Mono", "JetBrains Mono", Consolas, monospace;
+  overflow: hidden;
+}
+
+.shell-page {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.terminal-frame {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--panel-border);
+  background: #050505;
+}
+
+.window-buttons {
+  display: flex;
+  gap: 0.55rem;
+}
+
+.button {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+}
+
+.close {
+  background: #ff5f56;
+}
+
+.minimize {
+  background: #ffbd2e;
+}
+
+.maximize {
+  background: #27c93f;
+}
+
+.terminal-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--text-soft);
+  font-size: 0.85rem;
+}
+
+.meta-divider {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  background: #4b4b4b;
+}
+
+.terminal-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.terminal-output {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+  padding-bottom: 1rem;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.terminal-output::-webkit-scrollbar {
+  width: 0.55rem;
+}
+
+.terminal-output::-webkit-scrollbar-thumb {
+  background: #333333;
+}
+
+.output-block {
+  margin-bottom: 0.9rem;
+}
+
+.prompt-echo {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+  color: var(--text-main);
+}
+
+.prompt-echo .command {
+  color: var(--text-main);
+}
+
+.line {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.line.highlight {
+  color: var(--accent);
+}
+
+.line.success {
+  color: var(--accent-strong);
+}
+
+.line.warning {
+  color: var(--warning);
+}
+
+.line.error {
+  color: var(--danger);
+}
+
+.line.dim {
+  color: #808080;
+}
+
+.copy-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.2rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-main);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.copy-line:hover {
+  color: var(--accent);
+}
+
+.copy-line.copied {
+  color: var(--accent-strong);
+}
+
+.copy-label {
+  color: var(--text-soft);
+}
+
+.copy-value {
+  color: inherit;
+  word-break: break-word;
+}
+
+.copy-hint {
+  color: #808080;
+  margin-left: auto;
+  font-size: 0.88rem;
+}
+
+.directory-entry {
+  color: var(--accent);
+}
+
+.file-entry {
+  color: var(--text-main);
+}
+
+.prompt-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.85rem;
+  padding-bottom: 0.2rem;
+  border-top: 1px solid var(--panel-border);
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: var(--panel);
+}
+
+.prompt-label {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  white-space: nowrap;
+  color: var(--accent-strong);
+}
+
+.prompt-user {
+  color: var(--accent-strong);
+}
+
+.prompt-path {
+  color: var(--accent);
+}
+
+.terminal-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-main);
+  font: inherit;
+}
+
+.terminal-input:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.pdf-viewer {
+  margin-top: 0.25rem;
+  border: 1px solid var(--panel-border);
+  background: #050505;
+}
+
+.pdf-toolbar {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--panel-border);
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.pdf-frame {
+  display: block;
+  width: 100%;
+  height: min(84vh, 1100px);
+  border: 0;
+  background: #111111;
+}
+
+@media (max-width: 640px) {
+  .terminal-body {
+    padding: 0.85rem;
+  }
+
+  .prompt-row,
+  .prompt-label,
+  .prompt-echo {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .pdf-frame {
+    height: 72vh;
+  }
+}
