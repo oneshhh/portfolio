@@ -1,12 +1,12 @@
 :root {
-  --bg: #000000;
-  --panel: #000000;
-  --panel-border: #1f1f1f;
-  --text-main: #f4f4f4;
-  --text-soft: #bdbdbd;
-  --accent: #5fd7ff;
-  --accent-strong: #87ff5f;
-  --danger: #ff5f5f;
+  --bg: #050505;
+  --panel: #090909;
+  --panel-border: #272727;
+  --text-main: #f5f5f5;
+  --text-soft: #d2d2d2;
+  --accent: #7ad7ff;
+  --accent-strong: #9dff87;
+  --danger: #ff6b6b;
   --warning: #ffd75f;
   --shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
@@ -54,7 +54,7 @@ body {
   gap: 1rem;
   padding: 0.8rem 1rem;
   border-bottom: 1px solid var(--panel-border);
-  background: #050505;
+  background: #111111;
 }
 
 .window-buttons {
@@ -139,14 +139,35 @@ body {
 
 .line {
   margin: 0;
-  color: var(--text-soft);
-  line-height: 1.55;
+  color: var(--text-main);
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .line.highlight {
   color: var(--accent);
+  font-weight: 600;
+}
+
+.line.section-label {
+  color: var(--warning);
+  font-weight: 700;
+}
+
+.line.entry-title {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.line.project-title {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.line.separator {
+  color: #7a7a7a;
+  letter-spacing: 0.03em;
 }
 
 .line.success {
@@ -162,7 +183,7 @@ body {
 }
 
 .line.dim {
-  color: #808080;
+  color: #b7b7b7;
 }
 
 .copy-line {
@@ -170,17 +191,21 @@ body {
   flex-wrap: wrap;
   gap: 0.65rem;
   width: 100%;
-  padding: 0.2rem 0;
-  border: 0;
-  background: transparent;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid #1e1e1e;
+  border-left: 3px solid var(--accent);
+  background: #101010;
   color: var(--text-main);
   font: inherit;
   text-align: left;
   cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
 }
 
 .copy-line:hover {
   color: var(--accent);
+  border-left-color: var(--danger);
+  background: #141414;
 }
 
 .copy-line.copied {
@@ -188,7 +213,8 @@ body {
 }
 
 .copy-label {
-  color: var(--text-soft);
+  color: var(--warning);
+  font-weight: 600;
 }
 
 .copy-value {
@@ -197,7 +223,7 @@ body {
 }
 
 .copy-hint {
-  color: #808080;
+  color: #a8a8a8;
   margin-left: auto;
   font-size: 0.88rem;
 }

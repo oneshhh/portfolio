@@ -266,6 +266,8 @@ const bootSequence = [
   { text: "loading operator profile... ok", className: "success" }
 ];
 
+const SECTION_SEPARATOR = "______________________________________________";
+
 init();
 
 function init() {
@@ -355,20 +357,22 @@ function buildFileSystem(data) {
 
   const skillsText = buildSkillsText(data.skills);
 
-  const experienceText = data.experience.map((item) => {
+  const experienceText = data.experience.map((item, index) => {
     return [
       `${item.role} @ ${item.company}`,
       `${item.period}`,
-      ...item.summary.map((line) => `- ${line}`)
-    ].join("\n");
+      ...item.summary.map((line) => `- ${line}`),
+      index < data.experience.length - 1 ? SECTION_SEPARATOR : null
+    ].filter(Boolean).join("\n");
   }).join("\n\n");
 
-  const educationText = data.education.map((item) => {
+  const educationText = data.education.map((item, index) => {
     return [
       `${item.title}`,
       `${item.school}`,
-      `${item.period} | ${item.location}`
-    ].join("\n");
+      `${item.period} | ${item.location}`,
+      index < data.education.length - 1 ? SECTION_SEPARATOR : null
+    ].filter(Boolean).join("\n");
   }).join("\n\n");
 
   const nowText = data.now.map((item) => `- ${item}`).join("\n");
@@ -483,17 +487,19 @@ function buildLinkLines(data) {
 }
 
 function buildSkillsText(skills) {
-  return Object.entries(skills).map(([key, values]) => {
+  return Object.entries(skills).map(([key, values], index, entries) => {
     return [
       formatSectionHeading(key),
-      ...values.map((value) => `- ${value}`)
-    ].join("\n");
+      ...values.map((value) => `- ${value}`),
+      index < entries.length - 1 ? SECTION_SEPARATOR : null
+    ].filter(Boolean).join("\n");
   }).join("\n\n");
 }
 
 function buildWritingText(data) {
   return [
     "CarGlimpses",
+    SECTION_SEPARATOR,
     "",
     "I contribute as a writer to CarGlimpses, a publication I do not own, where I write on motorsports, automotive technology, and enthusiast-focused topics.",
     "My writing reflects a strong interest in Formula 1, the World Endurance Championship, and broader automotive industry trends.",
@@ -1087,34 +1093,34 @@ function renderEntries(entries) {
 
 function renderProjects(projects) {
   projects.forEach((project, index) => {
-    printLine(project.badge ? `${project.title} [${project.badge}]` : project.title, "highlight");
+    printLine(project.badge ? `${project.title} [${project.badge}]` : project.title, "project-title");
 
     if (project.context) {
       printLine(project.context, "dim");
     }
 
-    printLine("Project Details", "highlight");
+    printLine("Project Details", "section-label");
     project.summary.forEach((line) => printLine(`- ${line}`));
 
     if (project.stack?.length) {
-      printLine("Tech Stack", "highlight");
+      printLine("Tech Stack", "section-label");
       printLine(project.stack.join(" | "));
     }
 
     if (project.linkUrl) {
-      printLine("Link", "highlight");
+      printLine("Link", "section-label");
       printOpenLinkLine(project.linkLabel || "Project", project.linkUrl, "click to open");
     }
 
     if (index < projects.length - 1) {
-      printLine("");
+      printSeparator();
     }
   });
 }
 
 function renderCertifications(certifications) {
   certifications.forEach((certification, index) => {
-    printLine(certification.title, "highlight");
+    printLine(certification.title, "entry-title");
 
     if (certification.issuer) {
       printLine(certification.issuer, "dim");
@@ -1131,19 +1137,19 @@ function renderCertifications(certifications) {
       }
     }
 
-    printLine("Certification Details", "highlight");
+    printLine("Certification Details", "section-label");
     certification.summary.forEach((line) => printLine(`- ${line}`));
 
     if (certification.linkUrl) {
-      printLine("Credential Link", "highlight");
+      printLine("Credential Link", "section-label");
       printOpenLinkLine(certification.linkLabel || "Credential", certification.linkUrl, "click to open");
     } else if (certification.verificationNote) {
-      printLine("Verification", "highlight");
+      printLine("Verification", "section-label");
       printLine(certification.verificationNote);
     }
 
     if (index < certifications.length - 1) {
-      printLine("");
+      printSeparator();
     }
   });
 }
@@ -1332,6 +1338,10 @@ function printLine(text, className = "") {
   line.textContent = text;
   elements.output.appendChild(line);
   scrollOutput();
+}
+
+function printSeparator() {
+  printLine(SECTION_SEPARATOR, "separator");
 }
 
 function printCopyLine(label, value) {
