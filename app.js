@@ -220,14 +220,16 @@ const state = {
 const SECTION_SEPARATOR = "______________________________________________";
 const SKILL_COLUMN_TONES = ["cyan", "green", "amber", "magenta", "red", "blue", "lime"];
 const SKILL_LOGO_MAP = {
-  "AWS": "https://cdn.simpleicons.org/amazonaws/FF9900",
-  "Azure": "https://cdn.simpleicons.org/microsoftazure/0089D6",
-  "GCP": "https://cdn.simpleicons.org/googlecloud/4285F4",
+  "AWS": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg",
+  "Azure": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azure/azure-original.svg",
+  "GCP": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg",
   "Supabase": "https://cdn.simpleicons.org/supabase/3ECF8E",
   "Docker": "https://cdn.simpleicons.org/docker/2496ED",
   "Docker Compose": "https://cdn.simpleicons.org/docker/2496ED",
   "Kubernetes": "https://cdn.simpleicons.org/kubernetes/326CE5",
   "Linux": "https://cdn.simpleicons.org/linux/FCC624",
+  "Bash Scripting": "https://cdn.simpleicons.org/gnubash/4EAA25",
+  "Linux CLI": "https://cdn.simpleicons.org/linux/FCC624",
   "GitHub Actions": "https://cdn.simpleicons.org/githubactions/2088FF",
   "Nginx": "https://cdn.simpleicons.org/nginx/009639",
   "PM2": "https://cdn.simpleicons.org/pm2/2B037A",
@@ -1157,19 +1159,8 @@ function renderProjects(projects) {
 
 function renderSkills(skills) {
   const categories = Object.entries(skills);
-  const allSkills = categories.flatMap(([, values]) => values);
   const wrapper = document.createElement("section");
   wrapper.className = "skills-panel";
-
-  const marqueeItems = allSkills.concat(allSkills).map((skill, index) => {
-    const tone = SKILL_COLUMN_TONES[index % SKILL_COLUMN_TONES.length];
-    return `
-      <div class="skills-marquee-item skills-tone-${tone}">
-        ${buildSkillBadgeMarkup(skill, `skills-badge skills-tone-${tone}`)}
-        <span class="skills-marquee-text">${escapeHtml(skill)}</span>
-      </div>
-    `;
-  }).join("");
 
   const columns = categories.map(([category, values], index) => {
     const tone = SKILL_COLUMN_TONES[index % SKILL_COLUMN_TONES.length];
@@ -1193,14 +1184,6 @@ function renderSkills(skills) {
   }).join("");
 
   wrapper.innerHTML = `
-    <div class="skills-marquee-shell">
-      <div class="skills-marquee-label">Skills Broadcast</div>
-      <div class="skills-marquee-window" aria-hidden="true">
-        <div class="skills-marquee-track">
-          ${marqueeItems}
-        </div>
-      </div>
-    </div>
     <div class="skills-grid">
       ${columns}
     </div>
@@ -1443,7 +1426,13 @@ function buildSkillBadgeMarkup(skill, className) {
   if (logoUrl) {
     return `
       <span class="${className}">
-        <img src="${logoUrl}" alt="${escapeHtml(skill)} logo" loading="lazy">
+        <img
+          src="${logoUrl}"
+          alt="${escapeHtml(skill)} logo"
+          loading="lazy"
+          onerror="this.parentElement.classList.add('logo-missing'); this.remove();"
+        >
+        <span class="skills-fallback-glyph">${escapeHtml(initials)}</span>
       </span>
     `;
   }
