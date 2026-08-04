@@ -15,7 +15,7 @@ const profile = {
   mrRobotIp: "192.251.68.254",
   summary: [
     "DevOps Engineer at GXT with a strong focus on cloud infrastructure, networking, security, and production-ready platforms.",
-    "I work across cloud, backend, and operational tooling, and I also build products such as Dvar and Real Write that improve delivery, collaboration, and reliability."
+    "I work across cloud, backend, and operational tooling, and I also contribute to products such as Dvar and Real Write that improve delivery, collaboration, and operational reliability."
   ],
   strengths: [
     "Cloud infrastructure",
@@ -25,13 +25,13 @@ const profile = {
     "Backend systems"
   ],
   skills: {
-    cloud: ["AWS", "Azure", "GCP", "Supabase", "Cloud Networking", "VPC Design", "Storage Services"],
-    devops: ["Docker", "Kubernetes", "Linux", "CI/CD", "Bash Scripting", "Production Readiness", "Deployment Automation", "Monitoring"],
-    security: ["Network Security", "API Security", "Burp Suite", "Wireshark", "Threat Analysis", "Vulnerability Assessment", "Security Hardening", "SIEM"],
-    networking: ["TCP/IP", "Routing and Switching", "Subnetting", "DNS", "Firewalls", "VPN Concepts", "Cloud Device Configuration"],
-    programming: ["Python", "JavaScript", "Node.js", "Flask", "Express", "SQL"],
-    databases: ["PostgreSQL", "Supabase", "Relational Schema Design", "Data Modeling"],
-    tools: ["Git", "GitHub", "Splunk", "Ignition", "Nginx", "PM2"]
+    cloud: ["AWS", "Azure", "GCP", "Supabase", "IAM", "Cloud Networking", "VPC Design", "Load Balancing", "Compute Services", "Storage Services", "Secrets Management"],
+    devops: ["Docker", "Docker Compose", "Kubernetes", "Linux", "CI/CD", "GitHub Actions", "Bash Scripting", "Deployment Automation", "Production Readiness", "Monitoring", "Nginx", "PM2"],
+    security: ["Network Security", "API Security", "Burp Suite", "Wireshark", "Nmap", "Threat Analysis", "Vulnerability Assessment", "Security Hardening", "SIEM", "Log Analysis"],
+    networking: ["TCP/IP", "Routing and Switching", "Subnetting", "DNS", "Firewalls", "VPN Concepts", "Network Segmentation", "Proxying", "Cloud Device Configuration"],
+    programming: ["Python", "JavaScript", "Node.js", "Flask", "Express", "Bash", "SQL", "REST APIs"],
+    databases: ["PostgreSQL", "MySQL", "Supabase", "Relational Schema Design", "Data Modeling", "Query Optimization", "Database Administration"],
+    tools: ["Git", "GitHub", "Splunk", "Ignition", "Wireshark", "Burp Suite", "Postman", "Linux CLI"]
   },
   education: [
     {
@@ -55,9 +55,10 @@ const profile = {
       expires: "July 2029",
       verificationNote: "Credential record available through my IAM account.",
       summary: [
-        "Earned after completing the core coursework and a demanding certification exam that took more than 18 hours to complete.",
-        "Strengthened my understanding of connecting industrial systems to the internet while applying security principles to protect machines and operational workflows.",
-        "Gave me the foundation to build industry-ready dashboards and approach cloud-connected industrial environments with a stronger security mindset."
+        "I started learning Ignition to understand how industrial machines can be connected, monitored, and secured over the internet without treating operational systems like ordinary web infrastructure.",
+        "This certification pushed my security interest beyond computers and deeper into industrial environments, where reliability, safe connectivity, and controlled access matter just as much as software design.",
+        "I completed the core learning path and then cleared a certification exam that took me more than 18 hours, making it the most challenging assessment I have taken so far.",
+        "The experience strengthened my ability to build and deploy industry-ready dashboards while applying security-minded thinking to cloud-connected machines and client-facing industrial workflows."
       ]
     },
     {
@@ -66,9 +67,10 @@ const profile = {
       linkLabel: "Credential",
       linkUrl: "https://simpli-web.app.link/e/PIBL47T5j5b",
       summary: [
-        "Built a strong grounding in networking principles, device communication, and foundational security controls across modern network environments.",
-        "Deepened my understanding of attack vectors, the attacker mindset, isolation strategies, honeypots, and red-team and blue-team thinking.",
-        "Helped shape my path into cybersecurity by connecting networking, cloud devices, storage systems, and defensive operations."
+        "Built a strong grounding in networking principles, device communication, routing, switching, and the security controls that keep modern networks resilient.",
+        "Deepened my understanding of attack vectors, the attacker mindset, and the measures used to detect, avoid, isolate, and contain attacks across devices and network segments.",
+        "Introduced me to blue-team and red-team thinking, honeypots, cloud devices, storage environments, and the networking settings that influence both security posture and operational reliability.",
+        "This course played a major role in shaping my path into cybersecurity by turning networking theory into a practical security foundation I continue to build on."
       ]
     },
     {
@@ -139,11 +141,12 @@ const profile = {
       context: "Built for GXT",
       linkLabel: "Live product",
       linkUrl: "https://trydvar.com/",
-      stack: ["Hiring Platform", "AI-Assisted Evaluation", "Proctoring", "Analytics", "Cloud Infrastructure", "DevOps"],
+      stack: ["Structured Interviews", "AI Evaluation", "Proctoring", "Auto-Transcription", "Candidate Ranking", "Analytics", "Cloud Infrastructure"],
       summary: [
-        "Hiring workflow platform for structured interviews, exams, proctoring, AI scoring, candidate review, and ranked recommendations.",
-        "The public product highlights transcript and video review, proctoring visibility, candidate analytics, and job-level reporting to help teams move from job post to shortlist faster.",
-        "At GXT, I contributed from the infrastructure and production-readiness side, helping the team ship and operate the application reliably."
+        "Dvar is a hiring workflow platform that helps teams move from job post to shortlist through structured interviews, timed assessments, proctoring, auto-transcription, AI evaluation, and ranked candidate recommendations.",
+        "The live product showcases reviewer collaboration, transcript and video review, integrity monitoring, admin dashboards, and reporting that help hiring teams make faster and more evidence-based decisions.",
+        "At GXT, I worked on the project from the infrastructure and production-readiness side, helping the team ship, support, and operate the application reliably for real client workflows.",
+        "My contribution focused on strengthening the platform behind the scenes so the team could deliver a dependable product experience and keep the hiring process smooth at scale."
       ]
     },
     {
@@ -153,11 +156,12 @@ const profile = {
       context: "Self-hosted editorial operations platform",
       linkLabel: "GitHub repository",
       linkUrl: "https://github.com/oneshhh/writing",
-      stack: ["Open Source", "Editorial Operations", "Supabase", "PostgreSQL", "Node.js"],
+      stack: ["Open Source", "Editorial Operations", "Team Chat", "Project Tracking", "Supabase", "PostgreSQL", "Node.js"],
       summary: [
-        "Open-source platform for writing agencies, content studios, and internal publishing teams.",
-        "Brings project intake, writer assignment, editorial review, timelines, messaging, payment tracking, and exports into one connected workspace.",
-        "I created it from my freelance writing background to help small writing teams streamline operations and collaborate more effectively."
+        "Real Write is an open-source platform I continue to build for writing agencies, content studios, and small editorial teams that need one place to manage work and stay aligned.",
+        "It brings together project creation, team coordination, chat, editorial review, timelines, assignments, and operational tracking so content work can move across the team with less friction.",
+        "I created it from five years of experience in the writing industry and my own freelance background, where I saw how scattered communication and manual tracking slow down small teams.",
+        "The goal is to make content operations easier, more transparent, and more connected for agencies that need structure without heavyweight enterprise tools."
       ]
     },
     {
@@ -166,11 +170,12 @@ const profile = {
       context: "Final-year network security project",
       linkLabel: "Project repository",
       linkUrl: "https://github.com/oneshhh/NetSkopos",
-      stack: ["Python", "Flask", "Linux Monitoring", "SIEM Concepts", "Security Dashboard"],
+      stack: ["Python", "Flask", "Linux Monitoring", "SIEM", "Security Dashboard", "Network Analysis"],
       summary: [
-        "Lightweight SIEM-style monitoring dashboard built as a final-year graduation project focused on Linux devices and their network activity.",
-        "Visualizes suspicious behavior such as unauthorized file access, brute force patterns, user activity, and network anomalies through a real-time web interface.",
-        "Built to explore security monitoring concepts, event visibility, and dashboard-driven analysis in a modular environment."
+        "NetSkopos is a lightweight, modular SIEM-style project I completed during the final year of my graduation, with a strong focus on Linux devices and their network activity.",
+        "It monitors and visualizes suspicious behavior such as unauthorized file access, brute-force attempts, unusual traffic spikes, and user activity through a real-time dashboard.",
+        "Built with Python, Flask, and modern JavaScript, the project helped me explore event visibility, security monitoring workflows, and how defenders can surface meaningful signals from endpoint and network activity.",
+        "This project reflects my deeper interest in network security and Linux-based monitoring rather than general-purpose application development."
       ]
     },
     {
@@ -181,9 +186,10 @@ const profile = {
       linkUrl: "https://www.carglimpses.com/",
       stack: ["Writing", "Automotive", "Technology"],
       summary: [
-        "I contribute as a writer to CarGlimpses, a publication where I cover motorsports, automotive technology, and enthusiast-focused topics.",
-        "My work there reflects a strong interest in Formula 1, the World Endurance Championship, and broader automotive industry trends.",
-        "Across publishers, I have published 700+ articles, and this work continues to sharpen my research, communication, and editorial discipline."
+        "I contribute as a writer to CarGlimpses, a publication I do not own, where I write out of personal passion for motorsports, the automotive industry, and enthusiast culture.",
+        "My published work often reflects my interest in Formula 1, the World Endurance Championship, automotive technology, and the stories that shape the wider car world.",
+        "Across publishers, I have written more than 700 articles, and this ongoing writing practice continues to sharpen my research depth, communication style, and editorial discipline.",
+        "It remains an important part of my profile because it shows the consistency, curiosity, and domain-focused writing experience I have built alongside my technical work."
       ]
     }
   ],
@@ -247,8 +253,8 @@ const commands = {
   skills: () => commandCat(["/skills/skills.txt"]),
   contact: () => commandCat(["/contact/contact.txt"]),
   education: () => commandCat(["/education/education.txt"]),
-  certs: () => commandCat(["/certifications/certifications.txt"]),
-  certifications: () => commandCat(["/certifications/certifications.txt"]),
+  certs: commandCertificationsView,
+  certifications: commandCertificationsView,
   now: () => commandCat(["/now/now.txt"]),
   writing: () => commandLs(["/writing"])
 };
@@ -257,21 +263,7 @@ const bootSequence = [
   { text: "booting portfolio shell...", className: "dim" },
   { text: "initializing session... ok", className: "success" },
   { text: "mounting portfolio filesystem... ok", className: "success" },
-  { text: "loading operator profile... ok", className: "success" },
-  { text: "", className: "" },
-  { text: "__     ___    _   _ ____  _   _ ", className: "highlight" },
-  { text: "\\ \\   / / \\  | \\ | / ___|| | | |", className: "highlight" },
-  { text: " \\ \\ / / _ \\ |  \\| \\___ \\| |_| |", className: "highlight" },
-  { text: "  \\ V / ___ \\| |\\  |___) |  _  |", className: "highlight" },
-  { text: "   \\_/_/   \\_\\_| \\_|____/|_| |_|", className: "highlight" },
-  { text: " ____    _    ____  _   _    _    ____  __        ___    _     ", className: "highlight" },
-  { text: "/ ___|  / \\  | __ )| | | |  / \\  |  _ \\ \\ \\      / / \\  | |    ", className: "highlight" },
-  { text: "\\___ \\ / _ \\ |  _ \\| |_| | / _ \\ | |_) | \\ \\ /\\ / / _ \\ | |    ", className: "highlight" },
-  { text: " ___) / ___ \\| |_) |  _  |/ ___ \\|  _ <   \\ V  V / ___ \\| |___ ", className: "highlight" },
-  { text: "|____/_/   \\_\\____/|_| |_/_/   \\_\\_| \\_\\   \\_/\\_/_/   \\_\\_____|", className: "highlight" },
-  { text: "", className: "" },
-  { text: "Recruiter shortcut: resume  or  cd /resume", className: "" },
-  { text: "Useful commands: help, dir /contact, nano /contact/contact.txt, ipconfig", className: "dim" }
+  { text: "loading operator profile... ok", className: "success" }
 ];
 
 init();
@@ -379,7 +371,6 @@ function buildFileSystem(data) {
     ].join("\n");
   }).join("\n\n");
 
-  const certificationsText = buildCertificationsText(data.certifications);
   const nowText = data.now.map((item) => `- ${item}`).join("\n");
   const writingText = buildWritingText(data);
 
@@ -403,10 +394,7 @@ function buildFileSystem(data) {
       file("education.txt", educationText)
     ]),
     dir("certifications", [
-      file("certifications.txt", certificationsText, {
-        render: "certifications",
-        items: data.certifications
-      })
+      link("ccna.link", "CCNA", data.certifications[1].linkUrl)
     ]),
     dir("now", [
       file("now.txt", nowText)
@@ -503,47 +491,11 @@ function buildSkillsText(skills) {
   }).join("\n\n");
 }
 
-function buildCertificationsText(certifications) {
-  return certifications.map((certification) => {
-    const lines = [certification.title];
-
-    if (certification.issuer) {
-      lines.push(certification.issuer);
-    }
-
-    if (certification.earned || certification.expires) {
-      const timeline = [
-        certification.earned ? `Earned: ${certification.earned}` : null,
-        certification.expires ? `Expires: ${certification.expires}` : null
-      ].filter(Boolean).join(" | ");
-
-      if (timeline) {
-        lines.push(timeline);
-      }
-    }
-
-    lines.push("Details");
-    lines.push(...certification.summary.map((line) => `- ${line}`));
-
-    if (certification.linkUrl || certification.verificationNote) {
-      lines.push("Link");
-
-      if (certification.linkUrl) {
-        lines.push(`- ${(certification.linkLabel || "Credential")}: ${certification.linkUrl}`);
-      } else if (certification.verificationNote) {
-        lines.push(`- Verification: ${certification.verificationNote}`);
-      }
-    }
-
-    return lines.join("\n");
-  }).join("\n\n");
-}
-
 function buildWritingText(data) {
   return [
     "CarGlimpses",
     "",
-    "I contribute as a writer to CarGlimpses, where I publish on motorsports, automotive technology, and enthusiast-focused topics.",
+    "I contribute as a writer to CarGlimpses, a publication I do not own, where I write on motorsports, automotive technology, and enthusiast-focused topics.",
     "My writing reflects a strong interest in Formula 1, the World Endurance Championship, and broader automotive industry trends.",
     "Across publishers, I have published 700+ articles, and that work continues to sharpen my research, communication, and editorial discipline.",
     "",
@@ -790,6 +742,12 @@ function commandCd(args) {
     return;
   }
 
+  if (formatPath(state.currentPath).toLowerCase() === "/certifications") {
+    printLine("", "");
+    commandCertificationsView();
+    return;
+  }
+
   if (!state.currentPath.length) {
     printLine("", "");
     commandHome();
@@ -915,6 +873,10 @@ function commandWhoami() {
 
 function commandProjectsView() {
   renderProjects(profile.projects);
+}
+
+function commandCertificationsView() {
+  renderCertifications(profile.certifications);
 }
 
 function commandHome() {
@@ -1105,11 +1067,6 @@ function renderFile(node, pathLabel) {
     return;
   }
 
-  if (node.render === "certifications" && Array.isArray(node.items)) {
-    renderCertifications(node.items);
-    return;
-  }
-
   if (node.copyValue) {
     printCopyLine(node.copyLabel || pathLabel, node.copyValue);
     return;
@@ -1136,11 +1093,12 @@ function renderProjects(projects) {
       printLine(project.context, "dim");
     }
 
-    printLine("Details", "highlight");
+    printLine("Project Details", "highlight");
     project.summary.forEach((line) => printLine(`- ${line}`));
 
     if (project.stack?.length) {
-      printLine(`Stack: ${project.stack.join(", ")}`);
+      printLine("Tech Stack", "highlight");
+      printLine(project.stack.join(" | "));
     }
 
     if (project.linkUrl) {
@@ -1173,14 +1131,15 @@ function renderCertifications(certifications) {
       }
     }
 
-    printLine("Details", "highlight");
+    printLine("Certification Details", "highlight");
     certification.summary.forEach((line) => printLine(`- ${line}`));
 
     if (certification.linkUrl) {
-      printLine("Link", "highlight");
+      printLine("Credential Link", "highlight");
       printOpenLinkLine(certification.linkLabel || "Credential", certification.linkUrl, "click to open");
     } else if (certification.verificationNote) {
-      printLine(`Verification: ${certification.verificationNote}`);
+      printLine("Verification", "highlight");
+      printLine(certification.verificationNote);
     }
 
     if (index < certifications.length - 1) {
