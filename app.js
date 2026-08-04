@@ -217,6 +217,37 @@ const state = {
   booted: false
 };
 
+const SECTION_SEPARATOR = "______________________________________________";
+const SKILL_COLUMN_TONES = ["cyan", "green", "amber", "magenta", "red", "blue", "lime"];
+const SKILL_LOGO_MAP = {
+  "AWS": "https://cdn.simpleicons.org/amazonaws/FF9900",
+  "Azure": "https://cdn.simpleicons.org/microsoftazure/0089D6",
+  "GCP": "https://cdn.simpleicons.org/googlecloud/4285F4",
+  "Supabase": "https://cdn.simpleicons.org/supabase/3ECF8E",
+  "Docker": "https://cdn.simpleicons.org/docker/2496ED",
+  "Docker Compose": "https://cdn.simpleicons.org/docker/2496ED",
+  "Kubernetes": "https://cdn.simpleicons.org/kubernetes/326CE5",
+  "Linux": "https://cdn.simpleicons.org/linux/FCC624",
+  "GitHub Actions": "https://cdn.simpleicons.org/githubactions/2088FF",
+  "Nginx": "https://cdn.simpleicons.org/nginx/009639",
+  "PM2": "https://cdn.simpleicons.org/pm2/2B037A",
+  "Burp Suite": "https://cdn.simpleicons.org/portswigger/FF6633",
+  "Wireshark": "https://cdn.simpleicons.org/wireshark/1679A7",
+  "Python": "https://cdn.simpleicons.org/python/3776AB",
+  "JavaScript": "https://cdn.simpleicons.org/javascript/F7DF1E",
+  "Node.js": "https://cdn.simpleicons.org/nodedotjs/5FA04E",
+  "Flask": "https://cdn.simpleicons.org/flask/F5F5F5",
+  "Express": "https://cdn.simpleicons.org/express/F5F5F5",
+  "Bash": "https://cdn.simpleicons.org/gnubash/4EAA25",
+  "PostgreSQL": "https://cdn.simpleicons.org/postgresql/4169E1",
+  "MySQL": "https://cdn.simpleicons.org/mysql/4479A1",
+  "Git": "https://cdn.simpleicons.org/git/F05032",
+  "GitHub": "https://cdn.simpleicons.org/github/F5F5F5",
+  "Splunk": "https://cdn.simpleicons.org/splunk/F5F5F5",
+  "Postman": "https://cdn.simpleicons.org/postman/FF6C37",
+  "Nmap": "https://cdn.simpleicons.org/nmap/7AC142"
+};
+
 const filesystem = buildFileSystem(profile);
 
 const commands = {
@@ -265,8 +296,6 @@ const bootSequence = [
   { text: "mounting portfolio filesystem... ok", className: "success" },
   { text: "loading operator profile... ok", className: "success" }
 ];
-
-const SECTION_SEPARATOR = "______________________________________________";
 
 init();
 
@@ -392,7 +421,10 @@ function buildFileSystem(data) {
       link("carglimpses.link", "CarGlimpses", data.projects[3].linkUrl)
     ]),
     dir("skills", [
-      file("skills.txt", skillsText)
+      file("skills.txt", skillsText, {
+        render: "skillsMatrix",
+        skills: data.skills
+      })
     ]),
     dir("education", [
       file("education.txt", educationText)
@@ -1073,6 +1105,11 @@ function renderFile(node, pathLabel) {
     return;
   }
 
+  if (node.render === "skillsMatrix" && node.skills) {
+    renderSkills(node.skills);
+    return;
+  }
+
   if (node.copyValue) {
     printCopyLine(node.copyLabel || pathLabel, node.copyValue);
     return;
@@ -1116,6 +1153,61 @@ function renderProjects(projects) {
       printSeparator();
     }
   });
+}
+
+function renderSkills(skills) {
+  const categories = Object.entries(skills);
+  const allSkills = categories.flatMap(([, values]) => values);
+  const wrapper = document.createElement("section");
+  wrapper.className = "skills-panel";
+
+  const marqueeItems = allSkills.concat(allSkills).map((skill, index) => {
+    const tone = SKILL_COLUMN_TONES[index % SKILL_COLUMN_TONES.length];
+    return `
+      <div class="skills-marquee-item skills-tone-${tone}">
+        ${buildSkillBadgeMarkup(skill, `skills-badge skills-tone-${tone}`)}
+        <span class="skills-marquee-text">${escapeHtml(skill)}</span>
+      </div>
+    `;
+  }).join("");
+
+  const columns = categories.map(([category, values], index) => {
+    const tone = SKILL_COLUMN_TONES[index % SKILL_COLUMN_TONES.length];
+    const items = values.map((skill) => {
+      return `
+        <li class="skills-item">
+          ${buildSkillBadgeMarkup(skill, `skills-badge skills-tone-${tone}`)}
+          <span class="skills-item-label">${escapeHtml(skill)}</span>
+        </li>
+      `;
+    }).join("");
+
+    return `
+      <article class="skills-column skills-tone-${tone}">
+        <h3 class="skills-column-title">${escapeHtml(formatSectionHeading(category))}</h3>
+        <ul class="skills-list">
+          ${items}
+        </ul>
+      </article>
+    `;
+  }).join("");
+
+  wrapper.innerHTML = `
+    <div class="skills-marquee-shell">
+      <div class="skills-marquee-label">Skills Broadcast</div>
+      <div class="skills-marquee-window" aria-hidden="true">
+        <div class="skills-marquee-track">
+          ${marqueeItems}
+        </div>
+      </div>
+    </div>
+    <div class="skills-grid">
+      ${columns}
+    </div>
+  `;
+
+  elements.output.appendChild(wrapper);
+  scrollOutput();
 }
 
 function renderCertifications(certifications) {
@@ -1342,6 +1434,39 @@ function printLine(text, className = "") {
 
 function printSeparator() {
   printLine(SECTION_SEPARATOR, "separator");
+}
+
+function buildSkillBadgeMarkup(skill, className) {
+  const logoUrl = SKILL_LOGO_MAP[skill];
+  const initials = getSkillInitials(skill);
+
+  if (logoUrl) {
+    return `
+      <span class="${className}">
+        <img src="${logoUrl}" alt="${escapeHtml(skill)} logo" loading="lazy">
+      </span>
+    `;
+  }
+
+  return `
+    <span class="${className}">
+      <span class="skills-fallback-glyph">${escapeHtml(initials)}</span>
+    </span>
+  `;
+}
+
+function getSkillInitials(skill) {
+  const preserved = skill.match(/[A-Z0-9]+/g)?.join("");
+  if (preserved && preserved.length <= 4) {
+    return preserved.slice(0, 4);
+  }
+
+  return skill
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0].toUpperCase())
+    .join("") || skill.slice(0, 2).toUpperCase();
 }
 
 function printCopyLine(label, value) {
