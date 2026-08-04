@@ -14,6 +14,7 @@ const profile = {
   resumePdf: "VanshSabharwalResume.pdf",
   mrRobotIp: "192.251.68.254",
   summary: [
+<<<<<<< HEAD
     "DevOps Engineer at GXT with a strong focus on cloud infrastructure, networking, security, and production-ready platforms.",
     "I work across cloud, backend, and operational tooling, and I also build products such as Dvar and Real Write that improve delivery, collaboration, and reliability."
   ],
@@ -32,6 +33,23 @@ const profile = {
     programming: ["Python", "JavaScript", "Node.js", "Flask", "Express", "SQL"],
     databases: ["PostgreSQL", "Supabase", "Relational Schema Design", "Data Modeling"],
     tools: ["Git", "GitHub", "Splunk", "Ignition", "Nginx", "PM2"]
+=======
+    "DevOps Engineer at GXT with a strong focus on cloud infrastructure, networks and security.",
+    "I specialize in working with AWS, Azure, and GCP, with a keen interest in securing cloud environments and building scalable, production-ready systems."
+  ],
+  strengths: [
+    "Cloud infrastructure",
+    "Networks",
+    "Security",
+    "DevOps",
+    "Backend systems"
+  ],
+  skills: {
+    cloud: ["AWS", "Azure", "GCP"],
+    focus: ["Cloud Infrastructure", "Networking", "Security", "Scalable Systems"],
+    platform: ["Linux", "Docker", "Kubernetes", "Production Readiness"],
+    learning: ["Cloud Networking", "API Security", "Secure System Design"]
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
   },
   education: [
     {
@@ -48,6 +66,7 @@ const profile = {
     }
   ],
   certifications: [
+<<<<<<< HEAD
     {
       title: "Ignition Certification",
       issuer: "Inductive Automation",
@@ -83,6 +102,15 @@ const profile = {
     "Building secure cloud infrastructure and networking workflows at GXT.",
     "Supporting Dvar, a hiring workflow platform with structured interviews, proctoring, and AI-assisted evaluation.",
     "Continuing development on Real Write, an open-source editorial operations platform for writing teams."
+=======
+    "Cyber Security for Everyone - University of Maryland",
+    "CCNA - SimpliLearn"
+  ],
+  now: [
+    "Building secure cloud infrastructure and networking workflows at GXT.",
+    "Contributing to Dvar, an AI-powered one-sided interview platform.",
+    "Sharpening cloud networking and API security skills."
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
   ],
   experience: [
     {
@@ -90,9 +118,15 @@ const profile = {
       company: "GXT",
       period: "Present",
       summary: [
+<<<<<<< HEAD
         "Working across cloud infrastructure, networking, security, and deployment workflows.",
         "Helping ship Dvar at GXT, a hiring workflow platform with structured interviews, candidate review, proctoring, and reporting.",
         "Focused on scalability, operational reliability, and production readiness for real-world use."
+=======
+        "Working on cloud infrastructure, networks and security.",
+        "Building scalable, production-ready systems for real-world use.",
+        "Contributing to Dvar, a one-sided AI interview platform that helps companies recruit faster and more efficiently."
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
       ]
     },
     {
@@ -109,8 +143,13 @@ const profile = {
       company: "Collegedunia and CarHP",
       period: "10/2023 - 10/2024",
       summary: [
+<<<<<<< HEAD
         "Published 700+ articles across automotive and educational publishers, including work contributed to CarGlimpses.",
         "Wrote on motorsports, automotive technology, buyer-focused research, and enthusiast topics including Formula 1 and endurance racing."
+=======
+        "Worked as a freelance automotive content writer for educational and automotive platforms.",
+        "Explored and deepened my knowledge of the automotive industry through hands-on research and writing."
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
       ]
     },
     {
@@ -136,6 +175,7 @@ const profile = {
     {
       name: "dvar.txt",
       title: "Dvar",
+<<<<<<< HEAD
       context: "Built for GXT",
       linkLabel: "Live product",
       linkUrl: "https://trydvar.com/",
@@ -171,11 +211,28 @@ const profile = {
         "Lightweight SIEM-style monitoring dashboard built as a final-year graduation project focused on Linux devices and their network activity.",
         "Visualizes suspicious behavior such as unauthorized file access, brute force patterns, user activity, and network anomalies through a real-time web interface.",
         "Built to explore security monitoring concepts, event visibility, and dashboard-driven analysis in a modular environment."
+=======
+      stack: ["AI", "Recruitment", "Cloud Infrastructure", "DevOps"],
+      summary: [
+        "A one-sided interview platform powered by AI.",
+        "Built to help companies recruit faster and more efficiently.",
+        "My contribution focuses on infrastructure, scalability, and secure production readiness."
+      ]
+    },
+    {
+      name: "github-projects.txt",
+      title: "GitHub Projects",
+      stack: ["GitHub", "DevOps", "Cloud", "Backend"],
+      summary: [
+        "Most of my projects are available on GitHub.",
+        "They cover cloud infrastructure, DevOps, automation, and backend-focused work."
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
       ]
     },
     {
       name: "carglimpses.txt",
       title: "CarGlimpses",
+<<<<<<< HEAD
       context: "Contributor and automotive writer",
       linkLabel: "Publication website",
       linkUrl: "https://www.carglimpses.com/",
@@ -184,14 +241,26 @@ const profile = {
         "I contribute as a writer to CarGlimpses, a publication where I cover motorsports, automotive technology, and enthusiast-focused topics.",
         "My work there reflects a strong interest in Formula 1, the World Endurance Championship, and broader automotive industry trends.",
         "Across publishers, I have published 700+ articles, and this work continues to sharpen my research, communication, and editorial discipline."
+=======
+      stack: ["Writing", "Automotive", "Technology"],
+      summary: [
+        "I write about the automotive world on CarGlimpses.",
+        "The writing covers cars, tech, and hands-on insights as a dedicated gearhead."
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
       ]
     }
   ],
   facts: [
     "I am colourblind; I do not see shades of red and green combined together.",
+<<<<<<< HEAD
     "I work across cloud infrastructure, security, DevOps, and workflow-focused internal products.",
     "I continue to build Real Write and enjoy writing about motorsports and the automotive industry.",
     "You can reach out to me about cloud infrastructure, networking, security, DevOps, and backend systems."
+=======
+    "I am currently working on Dvar, a one-sided interview platform powered by AI.",
+    "I am learning cloud networking and API security with a focus on building and securing scalable systems.",
+    "You can reach out to me about cloud infrastructure, security, DevOps, and backend systems."
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
   ]
 };
 
@@ -241,7 +310,11 @@ const commands = {
   rsume: commandResumeView,
   "/resume": commandResumeView,
   "/rsume": commandResumeView,
+<<<<<<< HEAD
   projects: commandProjectsView,
+=======
+  projects: () => commandCat(["/projects/projects.txt"]),
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
   experience: () => commandCat(["/experience/experience.txt"]),
   expirience: () => commandCat(["/experience/experience.txt"]),
   skills: () => commandCat(["/skills/skills.txt"]),
@@ -270,6 +343,12 @@ const bootSequence = [
   { text: " ___) / ___ \\| |_) |  _  |/ ___ \\|  _ <   \\ V  V / ___ \\| |___ ", className: "highlight" },
   { text: "|____/_/   \\_\\____/|_| |_/_/   \\_\\_| \\_\\   \\_/\\_/_/   \\_\\_____|", className: "highlight" },
   { text: "", className: "" },
+<<<<<<< HEAD
+=======
+  { text: `${profile.name} | ${profile.title} @ ${profile.company}`, className: "" },
+  { text: `${profile.location}`, className: "" },
+  { text: "", className: "" },
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
   { text: "Recruiter shortcut: resume  or  cd /resume", className: "" },
   { text: "Useful commands: help, dir /contact, nano /contact/contact.txt, ipconfig", className: "dim" }
 ];
@@ -361,7 +440,13 @@ function buildFileSystem(data) {
     ...linkLines.map((line) => `- ${line}`)
   ].join("\n");
 
+<<<<<<< HEAD
   const skillsText = buildSkillsText(data.skills);
+=======
+  const skillsText = Object.entries(data.skills).map(([key, values]) => {
+    return `${key}\n${values.map((value) => `- ${value}`).join("\n")}`;
+  }).join("\n\n");
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
 
   const experienceText = data.experience.map((item) => {
     return [
@@ -371,6 +456,17 @@ function buildFileSystem(data) {
     ].join("\n");
   }).join("\n\n");
 
+<<<<<<< HEAD
+=======
+  const projectsText = data.projects.map((project) => {
+    return [
+      `${project.title}`,
+      `stack: ${project.stack.join(", ")}`,
+      ...project.summary.map((line) => `- ${line}`)
+    ].join("\n");
+  }).join("\n\n");
+
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
   const educationText = data.education.map((item) => {
     return [
       `${item.title}`,
@@ -379,9 +475,14 @@ function buildFileSystem(data) {
     ].join("\n");
   }).join("\n\n");
 
+<<<<<<< HEAD
   const certificationsText = buildCertificationsText(data.certifications);
   const nowText = data.now.map((item) => `- ${item}`).join("\n");
   const writingText = buildWritingText(data);
+=======
+  const certificationsText = data.certifications.map((item) => `- ${item}`).join("\n");
+  const nowText = data.now.map((item) => `- ${item}`).join("\n");
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
 
   return dir("/", [
     dir("about", [
@@ -391,10 +492,14 @@ function buildFileSystem(data) {
       file("experience.txt", experienceText)
     ]),
     dir("projects", [
+<<<<<<< HEAD
       link("dvar.link", "Dvar", data.projects[0].linkUrl),
       link("real-write.link", "Real Write", data.projects[1].linkUrl),
       link("netskopos.link", "NetSkopos", data.projects[2].linkUrl),
       link("carglimpses.link", "CarGlimpses", data.projects[3].linkUrl)
+=======
+      file("projects.txt", projectsText)
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
     ]),
     dir("skills", [
       file("skills.txt", skillsText)
@@ -403,10 +508,14 @@ function buildFileSystem(data) {
       file("education.txt", educationText)
     ]),
     dir("certifications", [
+<<<<<<< HEAD
       file("certifications.txt", certificationsText, {
         render: "certifications",
         items: data.certifications
       })
+=======
+      file("certifications.txt", certificationsText)
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
     ]),
     dir("now", [
       file("now.txt", nowText)
@@ -431,8 +540,17 @@ function buildFileSystem(data) {
       ...contactChildren.filter((child) => child.type === "link")
     ]),
     dir("writing", [
+<<<<<<< HEAD
       file("carglimpses.txt", writingText),
       link("carglimpses.link", "CarGlimpses", data.blog)
+=======
+      file("carglimpses.txt", [
+        "CarGlimpses",
+        "",
+        "I write about the automotive world on CarGlimpses.",
+        "Topics include cars, tech, and hands-on insights as a dedicated gearhead."
+      ].join("\n"))
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
     ]),
     file("README.txt", [
       "Welcome to the portfolio shell.",
@@ -494,6 +612,7 @@ function buildLinkLines(data) {
   ].filter(Boolean);
 }
 
+<<<<<<< HEAD
 function buildSkillsText(skills) {
   return Object.entries(skills).map(([key, values]) => {
     return [
@@ -551,12 +670,15 @@ function buildWritingText(data) {
   ].join("\n");
 }
 
+=======
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
 function formatEntries(entries) {
   return entries.map((entry) => {
     return `${entry.label.toLowerCase().padEnd(8, " ")} ${entry.value}`;
   }).join("\n");
 }
 
+<<<<<<< HEAD
 function formatSectionHeading(value) {
   return value
     .replace(/([A-Z])/g, " $1")
@@ -564,6 +686,8 @@ function formatSectionHeading(value) {
     .replace(/^./, (character) => character.toUpperCase());
 }
 
+=======
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
 function dir(name, children = []) {
   return { type: "dir", name, children };
 }
@@ -784,12 +908,15 @@ function commandCd(args) {
     return;
   }
 
+<<<<<<< HEAD
   if (formatPath(state.currentPath).toLowerCase() === "/projects") {
     printLine("", "");
     commandProjectsView();
     return;
   }
 
+=======
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
   if (!state.currentPath.length) {
     printLine("", "");
     commandHome();
@@ -913,10 +1040,13 @@ function commandWhoami() {
   ].forEach((line) => printLine(line, line === profile.name ? "highlight" : ""));
 }
 
+<<<<<<< HEAD
 function commandProjectsView() {
   renderProjects(profile.projects);
 }
 
+=======
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
 function commandHome() {
   const banner = [
     "__     ___    _   _ ____  _   _ ",
@@ -1100,6 +1230,7 @@ function renderFile(node, pathLabel) {
     return;
   }
 
+<<<<<<< HEAD
   if (node.render === "projects" && Array.isArray(node.items)) {
     renderProjects(node.items);
     return;
@@ -1110,6 +1241,8 @@ function renderFile(node, pathLabel) {
     return;
   }
 
+=======
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
   if (node.copyValue) {
     printCopyLine(node.copyLabel || pathLabel, node.copyValue);
     return;
@@ -1128,6 +1261,7 @@ function renderEntries(entries) {
   });
 }
 
+<<<<<<< HEAD
 function renderProjects(projects) {
   projects.forEach((project, index) => {
     printLine(project.badge ? `${project.title} [${project.badge}]` : project.title, "highlight");
@@ -1189,6 +1323,8 @@ function renderCertifications(certifications) {
   });
 }
 
+=======
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
 function tokenize(input) {
   return input.match(/(?:[^\s"]+|"[^"]*")+/g)?.map((token) => {
     return token.startsWith("\"") && token.endsWith("\"") ? token.slice(1, -1) : token;
@@ -1390,6 +1526,7 @@ function printCopyLine(label, value) {
   scrollOutput();
 }
 
+<<<<<<< HEAD
 function printOpenLinkLine(label, url, hint = "open link") {
   const button = document.createElement("button");
   button.type = "button";
@@ -1404,6 +1541,8 @@ function printOpenLinkLine(label, url, hint = "open link") {
   scrollOutput();
 }
 
+=======
+>>>>>>> cd686601a97990226078a939ee92e6330dfbe306
 function printPdfViewer(src, title) {
   const wrapper = document.createElement("div");
   wrapper.className = "pdf-viewer";
