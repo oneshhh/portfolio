@@ -25,13 +25,12 @@ const profile = {
     "Backend systems"
   ],
   skills: {
-    cloud: ["AWS", "Azure", "GCP", "Supabase", "IAM", "Cloud Networking", "VPC Design", "Load Balancing", "Compute Services", "Storage Services", "Secrets Management"],
+    cloud: ["AWS", "Azure", "GCP", "IAM", "Cloud Networking", "VPC Design", "Load Balancing", "Compute Services", "Storage Services", "Secrets Management"],
     devops: ["Docker", "Docker Compose", "Kubernetes", "Linux", "CI/CD", "GitHub Actions", "Bash Scripting", "Deployment Automation", "Production Readiness", "Monitoring", "Nginx", "PM2"],
     security: ["Network Security", "API Security", "Burp Suite", "Wireshark", "Nmap", "Threat Analysis", "Vulnerability Assessment", "Security Hardening", "SIEM", "Log Analysis"],
     networking: ["TCP/IP", "Routing and Switching", "Subnetting", "DNS", "Firewalls", "VPN Concepts", "Network Segmentation", "Proxying", "Cloud Device Configuration"],
     programming: ["Python", "JavaScript", "Node.js", "Flask", "Express", "Bash", "SQL", "REST APIs"],
-    databases: ["PostgreSQL", "MySQL", "Supabase", "Relational Schema Design", "Data Modeling", "Query Optimization", "Database Administration"],
-    tools: ["Git", "GitHub", "Splunk", "Ignition", "Wireshark", "Burp Suite", "Postman", "Linux CLI"]
+    tools: ["Git", "GitHub", "Supabase", "Splunk", "Ignition", "Wireshark", "Burp Suite", "Postman", "Linux CLI"]
   },
   education: [
     {
@@ -454,7 +453,7 @@ function buildFileSystem(data) {
         render: "contactEntries",
         entries: contactEntries
       }),
-      ...contactChildren.filter((child) => child.type === "link")
+      ...contactChildren.filter((child) => child.name !== "contact.txt")
     ]),
     dir("writing", [
       file("carglimpses.txt", writingText),
@@ -779,6 +778,12 @@ function commandCd(args) {
   if (formatPath(state.currentPath).toLowerCase() === "/projects") {
     printLine("", "");
     commandProjectsView();
+    return;
+  }
+
+  if (formatPath(state.currentPath).toLowerCase() === "/contact") {
+    printLine("", "");
+    commandCat(["/contact/contact.txt"]);
     return;
   }
 
