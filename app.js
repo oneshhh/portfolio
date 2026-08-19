@@ -770,6 +770,7 @@ function commandPlay() {
         <span>SCORE: <b data-game-score>00000</b></span>
       </div>
       <canvas class="runner-game__canvas" data-game-canvas width="960" height="300" role="img" aria-label="A runner dodging deploy obstacles"></canvas>
+      <div class="runner-game__countdown" hidden data-game-countdown aria-live="assertive"></div>
       <button class="runner-game__jump" type="button" data-game-jump>JUMP</button>
     </div>
     <div class="runner-game__result" hidden data-game-result aria-live="polite"></div>
@@ -786,6 +787,7 @@ function commandPlay() {
     canvas: wrapper.querySelector("[data-game-canvas]"),
     player: wrapper.querySelector("[data-game-player]"),
     score: wrapper.querySelector("[data-game-score]"),
+    countdown: wrapper.querySelector("[data-game-countdown]"),
     jump: wrapper.querySelector("[data-game-jump]"),
     result: wrapper.querySelector("[data-game-result]")
   };
@@ -819,7 +821,7 @@ async function loadLeaderboard(game) {
     game.elements.status.textContent = "live server scores";
   } catch (error) {
     renderLeaderboard(game, []);
-    game.elements.status.textContent = "score service offline";
+    game.elements.status.textContent = "score server unavailable — run npm start";
   }
 }
 
@@ -847,12 +849,43 @@ function renderLeaderboard(game, scores) {
 }
 
 function startDeployDash(game) {
-  game.active = true;
+  if (game.active || game.preparing) return;
+  game.preparing = true;
   game.elements.join.hidden = true;
   game.elements.stage.hidden = false;
   game.elements.result.hidden = true;
   game.elements.player.textContent = game.playerName;
+  game.elements.jump.hidden = true;
+  game.elements.countdown.hidden = false;
   elements.input.disabled = true;
+  void runDeployCountdown(game);
+}
+
+async function runDeployCountdown(game) {
+  for (const value of ["3", "2", "1"]) {
+    if (state.runnerGame !== game || !game.preparing) return;
+    game.elements.countdown.textContent = value;
+    game.elements.countdown.classList.remove("is-flashing");
+    void game.elements.countdown.offsetWidth;
+    game.elements.countdown.classList.add("is-flashing");
+    await delay(1000);
+  }
+
+  if (state.runnerGame !== game || !game.preparing) return;
+  game.elements.countdown.textContent = "DEPLOY!";
+  game.elements.countdown.classList.remove("is-flashing");
+  void game.elements.countdown.offsetWidth;
+  game.elements.countdown.classList.add("is-flashing");
+  await delay(420);
+  if (state.runnerGame !== game || !game.preparing) return;
+  game.elements.countdown.hidden = true;
+  beginDeployRun(game);
+}
+
+function beginDeployRun(game) {
+  game.preparing = false;
+  game.active = true;
+  game.elements.jump.hidden = false;
 
   const canvas = game.elements.canvas;
   const context = canvas.getContext("2d");
@@ -1216,9 +1249,11 @@ function collides(player, obstacle) {
 
 async function finishDeployDash(game) {
   game.active = false;
+  game.preparing = false;
   cancelAnimationFrame(game.animationFrame);
   window.removeEventListener("keydown", game.keyListener);
   elements.input.disabled = false;
+  game.elements.jump.hidden = true;
   game.elements.result.hidden = false;
   game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. Saving score…`;
   game.elements.status.textContent = "saving run…";
@@ -1235,8 +1270,8 @@ async function finishDeployDash(game) {
     game.elements.status.textContent = "score saved to server";
     game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. Your result is now on the board.`;
   } catch (error) {
-    game.elements.status.textContent = "score service offline";
-    game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. The server could not save this run.`;
+    game.elements.status.textContent = "score server unavailable — run npm start";
+    game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. Start this portfolio with 'npm start' and open http://localhost:3000 to save high scores.`;
   }
 
   const replay = document.createElement("button");

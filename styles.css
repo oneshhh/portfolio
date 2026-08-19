@@ -566,7 +566,7 @@ body {
   font-size: 0.74rem;
 }
 
-.runner-game__stage { padding: 0.85rem 1.15rem 1.15rem; border-top: 1px solid rgba(122, 215, 255, 0.14); }
+.runner-game__stage { position: relative; padding: 0.85rem 1.15rem 1.15rem; border-top: 1px solid rgba(122, 215, 255, 0.14); }
 .runner-game__hud { margin-bottom: 0.5rem; color: #9db3c3; font-size: 0.8rem; letter-spacing: 0.06em; }
 .runner-game__hud b { color: var(--accent-strong); }
 
@@ -581,6 +581,30 @@ body {
 }
 
 .runner-game__jump { width: 100%; margin-top: 0.6rem; padding: 0.55rem; letter-spacing: 0.09em; }
+
+.runner-game__countdown {
+  position: absolute;
+  inset: 2.4rem 1.15rem 1.15rem;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(157, 255, 135, 0.4);
+  background: rgba(4, 9, 15, 0.74);
+  color: #dffff0;
+  font-size: clamp(3rem, 12vw, 7rem);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 24px rgba(157, 255, 135, 0.8);
+}
+
+.runner-game__countdown.is-flashing { animation: deploy-countdown-flash 720ms ease-out both; }
+
+@keyframes deploy-countdown-flash {
+  0% { opacity: 0; transform: scale(1.4); filter: brightness(2.3); }
+  18% { opacity: 1; }
+  70% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.15; transform: scale(0.94); }
+}
 
 .runner-game__result {
   padding: 0.85rem 1.15rem 1.1rem;
