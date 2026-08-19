@@ -821,7 +821,7 @@ async function loadLeaderboard(game) {
     game.elements.status.textContent = "live server scores";
   } catch (error) {
     renderLeaderboard(game, []);
-    game.elements.status.textContent = "score server unavailable — run npm start";
+    game.elements.status.textContent = "leaderboard temporarily unavailable";
   }
 }
 
@@ -1278,8 +1278,8 @@ async function finishDeployDash(game) {
     game.elements.status.textContent = "score saved to server";
     game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. Your result is now on the board.`;
   } catch (error) {
-    game.elements.status.textContent = "score server unavailable — run npm start";
-    game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. Start this portfolio with 'npm start' and open http://localhost:3000 to save high scores.`;
+    game.elements.status.textContent = "leaderboard temporarily unavailable";
+    game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. The leaderboard could not save this run. Please try again in a moment.`;
   }
 
   const replay = document.createElement("button");
