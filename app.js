@@ -213,7 +213,8 @@ const state = {
   currentPath: [],
   history: [],
   historyIndex: -1,
-  booted: false
+  booted: false,
+  runnerGame: null
 };
 
 const SECTION_SEPARATOR = "______________________________________________";
@@ -274,6 +275,8 @@ const commands = {
   ipconfig: commandIpconfig,
   ifconfig: commandIpconfig,
   speedtest: commandSpeedtest,
+  play: commandPlay,
+  "/play": commandPlay,
   about: () => commandCat(["/about/about.txt"]),
   resume: commandResumeView,
   rsume: commandResumeView,
@@ -302,7 +305,11 @@ init();
 
 function init() {
   elements.form.addEventListener("submit", handleSubmit);
-  elements.shell.addEventListener("click", focusInput);
+  elements.shell.addEventListener("click", (event) => {
+    if (!event.target.closest(".runner-game")) {
+      focusInput();
+    }
+  });
   elements.output.addEventListener("click", handleOutputClick);
   elements.input.addEventListener("keydown", handleKeydown);
   runBootSequence();
@@ -701,6 +708,7 @@ function commandHelp() {
     "ipconfig            show themed network configuration",
     "ifconfig            alias for ipconfig",
     "speedtest           explain why live speed test is not enabled",
+    "/play               run the deploy dash and view the leaderboard",
     "clear               clear terminal output",
     "whoami              quick profile summary",
     "date                show current local time",
@@ -712,6 +720,534 @@ function commandHelp() {
     "",
     "Recruiter mode: resume, /resume, /rsume, or cd /resume"
   ].forEach((line) => printLine(line));
+}
+
+function commandPlay() {
+  if (state.runnerGame?.active) {
+    printLine("A deploy dash is already running. Finish it before starting another.", "warning");
+    return;
+  }
+
+  const game = {
+    active: false,
+    playerName: "",
+    score: 0,
+    animationFrame: null,
+    keyListener: null,
+    elements: {}
+  };
+  state.runnerGame = game;
+
+  const wrapper = document.createElement("section");
+  wrapper.className = "runner-game";
+  wrapper.setAttribute("aria-label", "Deploy Dash game");
+  wrapper.innerHTML = `
+    <div class="runner-game__header">
+      <div>
+        <p class="runner-game__eyebrow">SIDE QUEST // BUILD 01</p>
+        <h2>DEPLOY DASH</h2>
+      </div>
+      <p class="runner-game__tag">ship fast. dodge incidents.</p>
+    </div>
+    <div class="runner-game__leaderboard">
+      <div class="runner-game__section-heading">
+        <span>GLOBAL HIGH SCORES</span>
+        <span class="runner-game__status" data-game-status>connecting...</span>
+      </div>
+      <ol class="runner-game__scores" data-game-scores aria-live="polite"></ol>
+    </div>
+    <form class="runner-game__join" data-game-join autocomplete="off">
+      <label for="runner-name">Choose your runner name</label>
+      <div class="runner-game__join-row">
+        <input id="runner-name" data-game-name maxlength="20" required placeholder="e.g. cloud_runner" aria-describedby="runner-name-hint">
+        <button type="submit">Enter to start</button>
+      </div>
+      <p id="runner-name-hint">Press <kbd>Enter</kbd> to begin. Jump with <kbd>Space</kbd>, <kbd>↑</kbd>, or a tap. A second press gives you one mid-air recovery jump.</p>
+    </form>
+    <div class="runner-game__stage" hidden data-game-stage>
+      <div class="runner-game__hud">
+        <span>RUNNER: <b data-game-player></b></span>
+        <span>SCORE: <b data-game-score>00000</b></span>
+      </div>
+      <canvas class="runner-game__canvas" data-game-canvas width="960" height="300" role="img" aria-label="A runner dodging deploy obstacles"></canvas>
+      <button class="runner-game__jump" type="button" data-game-jump>JUMP</button>
+    </div>
+    <div class="runner-game__result" hidden data-game-result aria-live="polite"></div>
+  `;
+
+  elements.output.appendChild(wrapper);
+  game.elements = {
+    wrapper,
+    status: wrapper.querySelector("[data-game-status]"),
+    scores: wrapper.querySelector("[data-game-scores]"),
+    join: wrapper.querySelector("[data-game-join]"),
+    name: wrapper.querySelector("[data-game-name]"),
+    stage: wrapper.querySelector("[data-game-stage]"),
+    canvas: wrapper.querySelector("[data-game-canvas]"),
+    player: wrapper.querySelector("[data-game-player]"),
+    score: wrapper.querySelector("[data-game-score]"),
+    jump: wrapper.querySelector("[data-game-jump]"),
+    result: wrapper.querySelector("[data-game-result]")
+  };
+
+  game.elements.join.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const name = game.elements.name.value.trim();
+    if (!name) {
+      game.elements.name.focus();
+      return;
+    }
+    game.playerName = name;
+    startDeployDash(game);
+  });
+  game.elements.jump.addEventListener("click", () => game.jump?.());
+  game.elements.canvas.addEventListener("click", () => game.jump?.());
+
+  loadLeaderboard(game);
+  window.setTimeout(() => game.elements.name.focus(), 0);
+  scrollOutput();
+}
+
+async function loadLeaderboard(game) {
+  try {
+    const response = await fetch("/api/scores", { headers: { Accept: "application/json" } });
+    if (!response.ok) {
+      throw new Error("score service unavailable");
+    }
+    const payload = await response.json();
+    renderLeaderboard(game, payload.scores || []);
+    game.elements.status.textContent = "live server scores";
+  } catch (error) {
+    renderLeaderboard(game, []);
+    game.elements.status.textContent = "score service offline";
+  }
+}
+
+function renderLeaderboard(game, scores) {
+  game.elements.scores.replaceChildren();
+  if (!scores.length) {
+    const item = document.createElement("li");
+    item.className = "runner-game__empty-score";
+    item.textContent = "No runs logged yet. Set the first record.";
+    game.elements.scores.appendChild(item);
+    return;
+  }
+
+  scores.slice(0, 8).forEach((entry, index) => {
+    const item = document.createElement("li");
+    item.innerHTML = `<span class="runner-game__rank">${String(index + 1).padStart(2, "0")}</span>`;
+    const name = document.createElement("span");
+    name.className = "runner-game__score-name";
+    name.textContent = entry.name;
+    const score = document.createElement("strong");
+    score.textContent = String(entry.score).padStart(5, "0");
+    item.append(name, score);
+    game.elements.scores.appendChild(item);
+  });
+}
+
+function startDeployDash(game) {
+  game.active = true;
+  game.elements.join.hidden = true;
+  game.elements.stage.hidden = false;
+  game.elements.result.hidden = true;
+  game.elements.player.textContent = game.playerName;
+  elements.input.disabled = true;
+
+  const canvas = game.elements.canvas;
+  const context = canvas.getContext("2d");
+  const world = {
+    player: { x: 88, y: 214, width: 30, height: 38, velocity: 0, grounded: true, jumps: 0 },
+    obstacles: [],
+    gaps: [],
+    commits: [],
+    lastFrame: performance.now(),
+    startedAt: performance.now(),
+    spawnIn: 850,
+    lastObstacle: 0,
+    gapIn: 4300,
+    lastGap: 0,
+    commitIn: 1350,
+    lastCommit: 0
+  };
+
+  game.jump = () => {
+    if (world.player.jumps < 2) {
+      world.player.velocity = world.player.jumps === 0 ? -650 : -560;
+      world.player.grounded = false;
+      world.player.jumps += 1;
+    }
+  };
+  game.keyListener = (event) => {
+    if (!game.active) return;
+    if ([" ", "ArrowUp", "w", "W"].includes(event.key)) {
+      event.preventDefault();
+      game.jump();
+    }
+  };
+  window.addEventListener("keydown", game.keyListener);
+
+  const frame = (now) => {
+    if (!game.active) return;
+    const elapsed = Math.min((now - world.lastFrame) / 1000, 0.05);
+    world.lastFrame = now;
+    game.score = Math.floor((now - world.startedAt) / 85);
+    game.elements.score.textContent = String(game.score).padStart(5, "0");
+
+    world.player.velocity += 1780 * elapsed;
+    world.player.y += world.player.velocity * elapsed;
+    if (world.player.y >= 214 && !isOverGap(world.player, world.gaps)) {
+      world.player.y = 214;
+      world.player.velocity = 0;
+      world.player.grounded = true;
+      world.player.jumps = 0;
+    } else if (world.player.y >= 214) {
+      world.player.grounded = false;
+    }
+
+    world.lastObstacle += elapsed * 1000;
+    if (world.lastObstacle >= world.spawnIn && !world.gaps.some((gap) => gap.x > 620)) {
+      addDeployObstacle(world, game.score);
+      world.lastObstacle = 0;
+      world.spawnIn = Math.max(650, 1250 - Math.min(game.score * 1.6, 520) + Math.random() * 420);
+    }
+
+    world.lastGap += elapsed * 1000;
+    if (game.score >= 140 && world.lastGap >= world.gapIn) {
+      addPlatformGap(world, game.score);
+      world.lastGap = 0;
+      world.gapIn = Math.max(2600, 5000 - Math.min(game.score * 2, 1700) + Math.random() * 1500);
+    }
+
+    world.lastCommit += elapsed * 1000;
+    if (world.lastCommit >= world.commitIn) {
+      addFloatingCommit(world);
+      world.lastCommit = 0;
+      world.commitIn = 1800 + Math.random() * 2300;
+    }
+
+    const speed = getRunSpeed(game.score);
+    world.obstacles.forEach((obstacle) => { obstacle.x -= speed * elapsed; });
+    world.obstacles = world.obstacles.filter((obstacle) => obstacle.x + obstacle.width > -20);
+    world.gaps.forEach((gap) => { gap.x -= speed * elapsed; });
+    world.gaps = world.gaps.filter((gap) => gap.x + gap.width > -20);
+    world.commits.forEach((commit) => { commit.x -= speed * 0.22 * elapsed; });
+    world.commits = world.commits.filter((commit) => commit.x + commit.width > -20);
+
+    drawDeployDash(context, world, game.score);
+    if (world.obstacles.some((obstacle) => collides(world.player, obstacle)) || world.player.y > 310) {
+      finishDeployDash(game);
+      return;
+    }
+    game.animationFrame = requestAnimationFrame(frame);
+  };
+
+  game.animationFrame = requestAnimationFrame(frame);
+}
+
+function addDeployObstacle(world, score) {
+  const types = [
+    { type: "deadline", width: 34, height: 47 },
+    { type: "broken-build", width: 44, height: 34 },
+    { type: "merge-conflict", width: 49, height: 43 },
+    { type: "rate-limit", width: 42, height: 31 },
+    { type: "rollback-bot", width: 48, height: 45 },
+    { type: "pager-alert", width: 39, height: 52 }
+  ];
+  const availableTypes = score < 120 ? types.slice(0, 3) : types;
+  const choice = availableTypes[Math.floor(Math.random() * availableTypes.length)];
+  world.obstacles.push({ ...choice, x: 980, y: 252 - choice.height, score });
+}
+
+function addPlatformGap(world, score) {
+  const width = Math.min(168, 102 + Math.floor(score / 75) * 8 + Math.floor(Math.random() * 22));
+  world.gaps.push({ x: 980, width });
+}
+
+function isOverGap(player, gaps) {
+  const footStart = player.x + 6;
+  const footEnd = player.x + player.width - 6;
+  return gaps.some((gap) => footEnd > gap.x && footStart < gap.x + gap.width);
+}
+
+function addFloatingCommit(world) {
+  const messages = [
+    "fix: calm prod latency",
+    "feat: ship deploy dash",
+    "ci: build is green",
+    "chore: rotate secrets",
+    "docs: release notes"
+  ];
+  const message = messages[Math.floor(Math.random() * messages.length)];
+  world.commits.push({
+    message,
+    x: 990,
+    y: 46 + Math.floor(Math.random() * 95),
+    width: Math.max(145, message.length * 7.5 + 34)
+  });
+}
+
+function getLatency(score) {
+  return Math.max(12, Math.ceil(98 - score / 8));
+}
+
+function getRunSpeed(score) {
+  const latencyFloorScore = 688;
+  if (score <= latencyFloorScore) {
+    return 365 + score * 0.36;
+  }
+  return 365 + latencyFloorScore * 0.36 + (score - latencyFloorScore) * 0.09;
+}
+
+function drawDeployDash(context, world, score) {
+  const { canvas } = context;
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  const sky = context.createLinearGradient(0, 0, 0, canvas.height);
+  sky.addColorStop(0, "#101a2c");
+  sky.addColorStop(1, "#07100f");
+  context.fillStyle = sky;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  drawPipelineBackground(context, score);
+
+  context.strokeStyle = "rgba(122, 215, 255, 0.11)";
+  context.lineWidth = 1;
+  for (let x = -((score * 3) % 52); x < canvas.width; x += 52) {
+    context.beginPath(); context.moveTo(x, 0); context.lineTo(x + 120, 252); context.stroke();
+  }
+  for (let y = 38; y < 245; y += 38) {
+    context.beginPath(); context.moveTo(0, y); context.lineTo(canvas.width, y); context.stroke();
+  }
+
+  drawPlatformGround(context, world.gaps, score);
+
+  world.commits.forEach((commit) => drawFloatingCommit(context, commit));
+  drawRunner(context, world.player);
+  world.obstacles.forEach((obstacle) => drawObstacle(context, obstacle));
+  context.fillStyle = "rgba(245, 245, 245, 0.55)";
+  context.font = '12px "Cascadia Code", monospace';
+  context.fillText("PIPELINE // PROD", 18, 25);
+  const latency = getLatency(score);
+  context.fillStyle = latency === 12 ? "#9dff87" : "rgba(245, 245, 245, 0.55)";
+  context.fillText("LATENCY: " + String(latency).padStart(2, "0") + "ms" + (latency === 12 ? " // TURBO" : ""), 700, 25);
+}
+
+function drawPipelineBackground(context, score) {
+  const { canvas } = context;
+  const skylineOffset = (score * 0.8) % 180;
+  context.fillStyle = "rgba(5, 11, 18, 0.74)";
+  for (let x = -180 - skylineOffset; x < canvas.width + 180; x += 180) {
+    const buildings = [
+      { offset: 0, width: 45, height: 74 },
+      { offset: 55, width: 70, height: 112 },
+      { offset: 136, width: 35, height: 58 }
+    ];
+    buildings.forEach((building) => {
+      const top = 252 - building.height;
+      context.fillRect(x + building.offset, top, building.width, building.height);
+      context.fillStyle = "rgba(122, 215, 255, 0.18)";
+      for (let windowY = top + 13; windowY < 244; windowY += 17) {
+        for (let windowX = x + building.offset + 9; windowX < x + building.offset + building.width - 5; windowX += 13) {
+          context.fillRect(windowX, windowY, 4, 5);
+        }
+      }
+      context.fillStyle = "rgba(5, 11, 18, 0.74)";
+    });
+  }
+
+  context.strokeStyle = "rgba(157, 255, 135, 0.2)";
+  context.lineWidth = 1;
+  const nodes = [[120, 103], [270, 68], [420, 118], [585, 75], [735, 126], [890, 79]];
+  context.beginPath();
+  nodes.forEach(([x, y], index) => index ? context.lineTo(x, y) : context.moveTo(x, y));
+  context.stroke();
+  nodes.forEach(([x, y]) => {
+    context.fillStyle = "#9dff87";
+    context.fillRect(x - 2, y - 2, 4, 4);
+  });
+
+  const pulseX = 120 + (score * 4.5) % 760;
+  context.fillStyle = "#ffd75f";
+  context.fillRect(pulseX, 95 + Math.sin(score / 15) * 20, 5, 5);
+}
+
+function drawFloatingCommit(context, commit) {
+  context.save();
+  context.globalAlpha = 0.9;
+  context.fillStyle = "#13263a";
+  context.fillRect(commit.x, commit.y, commit.width, 28);
+  context.strokeStyle = "#4b9bc4";
+  context.strokeRect(commit.x + 0.5, commit.y + 0.5, commit.width - 1, 27);
+  context.fillStyle = "#9dff87";
+  context.fillRect(commit.x + 9, commit.y + 9, 8, 8);
+  context.fillStyle = "#dbeef7";
+  context.font = '11px "Cascadia Code", monospace';
+  context.fillText(commit.message, commit.x + 25, commit.y + 18);
+  context.restore();
+}
+
+function drawPlatformGround(context, gaps, score) {
+  const { canvas } = context;
+  const visibleGaps = [...gaps]
+    .filter((gap) => gap.x < canvas.width && gap.x + gap.width > 0)
+    .sort((left, right) => left.x - right.x);
+  let platformStart = 0;
+
+  visibleGaps.forEach((gap) => {
+    drawPlatformSegment(context, platformStart, Math.max(platformStart, gap.x), score);
+    const gapStart = Math.max(0, gap.x);
+    const gapEnd = Math.min(canvas.width, gap.x + gap.width);
+    context.fillStyle = "rgba(3, 7, 13, 0.9)";
+    context.fillRect(gapStart, 252, gapEnd - gapStart, 48);
+    context.fillStyle = "rgba(255, 107, 107, 0.72)";
+    for (let x = gapStart + 8; x < gapEnd - 4; x += 18) {
+      context.beginPath();
+      context.moveTo(x, 278);
+      context.lineTo(x + 7, 264);
+      context.lineTo(x + 14, 278);
+      context.fill();
+    }
+    platformStart = Math.max(platformStart, gap.x + gap.width);
+  });
+  drawPlatformSegment(context, platformStart, canvas.width, score);
+}
+
+function drawPlatformSegment(context, start, end, score) {
+  if (end <= start) return;
+  context.fillStyle = "#91ffcb";
+  context.fillRect(start, 252, end - start, 3);
+  context.fillStyle = "rgba(145, 255, 203, 0.14)";
+  for (let x = start - ((score * 5) % 76); x < end; x += 76) {
+    context.fillRect(x, 262, Math.min(38, end - x), 3);
+  }
+}
+
+function drawRunner(context, player) {
+  context.save();
+  context.translate(player.x, player.y);
+  context.fillStyle = "#7ad7ff";
+  context.fillRect(7, 0, 18, 13);
+  context.fillStyle = "#f5f5f5";
+  context.fillRect(2, 13, 28, 19);
+  context.fillStyle = "#101a2c";
+  context.fillRect(7, 18, 5, 5);
+  context.fillRect(19, 18, 5, 5);
+  context.fillStyle = "#9dff87";
+  context.fillRect(0, 32, 11, 6);
+  context.fillRect(19, 32, 11, 6);
+  context.restore();
+}
+
+function drawObstacle(context, obstacle) {
+  context.save();
+  context.translate(obstacle.x, obstacle.y);
+  if (obstacle.type === "deadline") {
+    context.fillStyle = "#ffd75f";
+    context.fillRect(0, 0, 34, 47);
+    context.fillStyle = "#202020";
+    context.fillRect(0, 0, 34, 10);
+    context.fillStyle = "#161616";
+    context.font = "bold 14px sans-serif";
+    context.fillText("14", 8, 32);
+    context.font = "9px sans-serif";
+    context.fillText("DUE", 7, 43);
+  } else if (obstacle.type === "broken-build") {
+    context.fillStyle = "#ff6b6b";
+    context.fillRect(0, 8, 44, 26);
+    context.fillStyle = "#4b1616";
+    context.fillRect(5, 13, 34, 7);
+    context.fillStyle = "#f5f5f5";
+    context.font = "bold 19px sans-serif";
+    context.fillText("×", 15, 34);
+    context.fillStyle = "#ff9c9c";
+    context.fillRect(9, 0, 7, 8); context.fillRect(28, 0, 7, 8);
+  } else if (obstacle.type === "merge-conflict") {
+    context.fillStyle = "#c5a3ff";
+    context.fillRect(0, 0, 49, 43);
+    context.fillStyle = "#271a40";
+    context.font = "bold 18px monospace";
+    context.fillText("<<<<", 3, 19);
+    context.fillText(">>>>", 3, 37);
+  } else if (obstacle.type === "rate-limit") {
+    context.fillStyle = "#ff956b";
+    for (let x = 0; x < 42; x += 14) {
+      context.beginPath();
+      context.moveTo(x, 31);
+      context.lineTo(x + 7, 0);
+      context.lineTo(x + 14, 31);
+      context.fill();
+    }
+    context.fillStyle = "#3d1a11";
+    context.font = "bold 8px monospace";
+    context.fillText("429", 9, 24);
+  } else if (obstacle.type === "rollback-bot") {
+    context.fillStyle = "#6ee7ff";
+    context.fillRect(4, 10, 40, 28);
+    context.fillStyle = "#142331";
+    context.fillRect(9, 15, 30, 12);
+    context.fillStyle = "#ff6b6b";
+    context.fillRect(14, 18, 6, 4);
+    context.fillRect(29, 18, 6, 4);
+    context.fillStyle = "#6ee7ff";
+    context.fillRect(19, 0, 10, 10);
+    context.fillRect(0, 38, 15, 7);
+    context.fillRect(33, 38, 15, 7);
+  } else {
+    context.fillStyle = "#ff6b6b";
+    context.fillRect(3, 7, 33, 38);
+    context.fillStyle = "#ffd75f";
+    context.fillRect(8, 12, 23, 22);
+    context.fillStyle = "#3b2600";
+    context.font = "bold 17px sans-serif";
+    context.fillText("!", 16, 30);
+    context.fillStyle = "#ff6b6b";
+    context.fillRect(0, 0, 39, 6);
+  }
+  context.restore();
+}
+
+function collides(player, obstacle) {
+  const inset = 5;
+  return player.x + inset < obstacle.x + obstacle.width - inset &&
+    player.x + player.width - inset > obstacle.x + inset &&
+    player.y + inset < obstacle.y + obstacle.height - inset &&
+    player.y + player.height - inset > obstacle.y + inset;
+}
+
+async function finishDeployDash(game) {
+  game.active = false;
+  cancelAnimationFrame(game.animationFrame);
+  window.removeEventListener("keydown", game.keyListener);
+  elements.input.disabled = false;
+  game.elements.result.hidden = false;
+  game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. Saving score…`;
+  game.elements.status.textContent = "saving run…";
+
+  try {
+    const response = await fetch("/api/scores", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ name: game.playerName, score: game.score })
+    });
+    if (!response.ok) throw new Error("unable to save score");
+    const payload = await response.json();
+    renderLeaderboard(game, payload.scores || []);
+    game.elements.status.textContent = "score saved to server";
+    game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. Your result is now on the board.`;
+  } catch (error) {
+    game.elements.status.textContent = "score service offline";
+    game.elements.result.textContent = `Run complete — ${game.playerName} scored ${game.score}. The server could not save this run.`;
+  }
+
+  const replay = document.createElement("button");
+  replay.type = "button";
+  replay.className = "runner-game__replay";
+  replay.textContent = "Run again";
+  replay.addEventListener("click", () => startDeployDash(game));
+  game.elements.result.appendChild(document.createElement("br"));
+  game.elements.result.appendChild(replay);
+  scrollOutput();
+  focusInput();
 }
 
 function commandLs(args) {

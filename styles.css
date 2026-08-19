@@ -417,6 +417,179 @@ body {
   color: #bef264;
 }
 
+.runner-game {
+  width: min(100%, 960px);
+  margin: 0.45rem 0 1rem;
+  border: 1px solid #355267;
+  background:
+    linear-gradient(135deg, rgba(122, 215, 255, 0.09), transparent 42%),
+    #080d14;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.38), inset 0 0 40px rgba(122, 215, 255, 0.025);
+  color: var(--text-main);
+}
+
+.runner-game__header,
+.runner-game__section-heading,
+.runner-game__join,
+.runner-game__hud {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.runner-game__header {
+  padding: 1.1rem 1.15rem;
+  border-bottom: 1px solid #355267;
+}
+
+.runner-game h2,
+.runner-game p {
+  margin: 0;
+}
+
+.runner-game h2 {
+  margin-top: 0.1rem;
+  color: #f5f5f5;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  letter-spacing: 0.11em;
+}
+
+.runner-game__eyebrow,
+.runner-game__tag,
+.runner-game__status {
+  color: #9db3c3;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.runner-game__tag {
+  color: var(--accent-strong);
+  text-align: right;
+}
+
+.runner-game__leaderboard {
+  padding: 1rem 1.15rem 0.5rem;
+}
+
+.runner-game__section-heading {
+  color: var(--warning);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.runner-game__scores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem 1rem;
+  margin: 0.7rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.runner-game__scores li {
+  display: grid;
+  grid-template-columns: 1.8rem minmax(0, 1fr) auto;
+  gap: 0.45rem;
+  align-items: center;
+  min-width: 0;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid rgba(122, 215, 255, 0.14);
+  background: rgba(5, 10, 15, 0.62);
+  font-size: 0.84rem;
+}
+
+.runner-game__scores .runner-game__empty-score {
+  display: block;
+  grid-column: 1 / -1;
+  color: #9db3c3;
+}
+
+.runner-game__rank { color: var(--accent); }
+.runner-game__score-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.runner-game__scores strong { color: var(--accent-strong); }
+
+.runner-game__join {
+  display: block;
+  padding: 0.85rem 1.15rem 1.1rem;
+  border-top: 1px solid rgba(122, 215, 255, 0.14);
+}
+
+.runner-game__join label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #d8e9f3;
+  font-size: 0.9rem;
+}
+
+.runner-game__join-row { display: flex; gap: 0.6rem; }
+
+.runner-game__join input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #456d86;
+  outline: 0;
+  background: #05090e;
+  color: var(--text-main);
+  font: inherit;
+}
+
+.runner-game__join input:focus { border-color: var(--accent-strong); box-shadow: 0 0 0 2px rgba(157, 255, 135, 0.14); }
+
+.runner-game button {
+  border: 1px solid var(--accent-strong);
+  background: rgba(157, 255, 135, 0.12);
+  color: #dffff0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.runner-game__join button { padding: 0.65rem 0.85rem; white-space: nowrap; }
+.runner-game button:hover { background: rgba(157, 255, 135, 0.23); }
+
+.runner-game__join p {
+  margin-top: 0.55rem;
+  color: #9db3c3;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.runner-game kbd {
+  padding: 0.1rem 0.25rem;
+  border: 1px solid #456d86;
+  background: #101a25;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.74rem;
+}
+
+.runner-game__stage { padding: 0.85rem 1.15rem 1.15rem; border-top: 1px solid rgba(122, 215, 255, 0.14); }
+.runner-game__hud { margin-bottom: 0.5rem; color: #9db3c3; font-size: 0.8rem; letter-spacing: 0.06em; }
+.runner-game__hud b { color: var(--accent-strong); }
+
+.runner-game__canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #355267;
+  background: #101a2c;
+  image-rendering: pixelated;
+  touch-action: manipulation;
+}
+
+.runner-game__jump { width: 100%; margin-top: 0.6rem; padding: 0.55rem; letter-spacing: 0.09em; }
+
+.runner-game__result {
+  padding: 0.85rem 1.15rem 1.1rem;
+  border-top: 1px solid rgba(122, 215, 255, 0.14);
+  color: var(--warning);
+}
+
+.runner-game__replay { margin-top: 0.65rem; padding: 0.45rem 0.65rem; }
+
 @media (max-width: 640px) {
   .terminal-body {
     padding: 0.85rem;
@@ -436,4 +609,15 @@ body {
   .skills-grid {
     grid-template-columns: 1fr;
   }
+
+  .runner-game__header,
+  .runner-game__section-heading,
+  .runner-game__hud {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .runner-game__tag { text-align: left; }
+  .runner-game__scores { grid-template-columns: 1fr; }
+  .runner-game__join-row { flex-direction: column; }
 }
