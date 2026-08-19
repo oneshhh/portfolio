@@ -812,7 +812,7 @@ function commandPlay() {
 
 async function loadLeaderboard(game) {
   try {
-    const response = await fetch("/api/scores", { headers: { Accept: "application/json" } });
+    const response = await fetch(getScoreApiUrl(), { headers: { Accept: "application/json" } });
     if (!response.ok) {
       throw new Error("score service unavailable");
     }
@@ -823,6 +823,14 @@ async function loadLeaderboard(game) {
     renderLeaderboard(game, []);
     game.elements.status.textContent = "score server unavailable — run npm start";
   }
+}
+
+function getScoreApiUrl() {
+  const isLocalPreview = window.location.protocol === "file:" ||
+    ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  return isLocalPreview && window.location.port !== "3000"
+    ? "http://localhost:3000/api/scores"
+    : "/api/scores";
 }
 
 function renderLeaderboard(game, scores) {
@@ -1259,7 +1267,7 @@ async function finishDeployDash(game) {
   game.elements.status.textContent = "saving run…";
 
   try {
-    const response = await fetch("/api/scores", {
+    const response = await fetch(getScoreApiUrl(), {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ name: game.playerName, score: game.score })

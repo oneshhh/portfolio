@@ -19,6 +19,15 @@ const MIME_TYPES = {
 const server = http.createServer(async (request, response) => {
   const url = new URL(request.url, `http://${request.headers.host || "localhost"}`);
 
+  if (request.method === "OPTIONS") {
+    response.writeHead(204, {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Accept"
+    });
+    return response.end();
+  }
+
   if (url.pathname === "/api/scores") {
     if (request.method === "GET") {
       return sendJson(response, 200, { scores: await readScores() });
@@ -129,7 +138,11 @@ async function serveStatic(pathname, method, response) {
 }
 
 function sendJson(response, statusCode, payload) {
-  response.writeHead(statusCode, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
+  response.writeHead(statusCode, {
+    "Content-Type": "application/json; charset=utf-8",
+    "Cache-Control": "no-store",
+    "Access-Control-Allow-Origin": "*"
+  });
   response.end(JSON.stringify(payload));
 }
 

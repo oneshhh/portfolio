@@ -597,6 +597,10 @@ body {
   text-shadow: 0 0 24px rgba(157, 255, 135, 0.8);
 }
 
+.runner-game__countdown[hidden] {
+  display: none;
+}
+
 .runner-game__countdown.is-flashing { animation: deploy-countdown-flash 720ms ease-out both; }
 
 @keyframes deploy-countdown-flash {
@@ -610,6 +614,7 @@ body {
   padding: 0.85rem 1.15rem 1.1rem;
   border-top: 1px solid rgba(122, 215, 255, 0.14);
   color: var(--warning);
+  text-align: center;
 }
 
 .runner-game__replay { margin-top: 0.65rem; padding: 0.45rem 0.65rem; }
