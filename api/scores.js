@@ -27,9 +27,10 @@ module.exports = async function handler(request, response) {
 
   try {
     const body = await readJsonBody(request);
+    const nameError = validateRunnerName(body.name);
     const name = sanitizeName(body.name);
     const score = Number(body.score);
-    if (!name || !Number.isInteger(score) || score < 0 || score > 10000000) {
+    if (nameError || !Number.isInteger(score) || score < 0 || score > 10000000) {
       return sendJson(response, 400, { error: "A valid runner name and score are required." });
     }
 
@@ -80,6 +81,20 @@ function isValidScore(entry) {
 function sanitizeName(value) {
   if (typeof value !== "string") return "";
   return value.trim().replace(/\s+/g, " ").replace(/[^a-zA-Z0-9 _.-]/g, "").slice(0, 20);
+}
+
+function validateRunnerName(value) {
+  if (typeof value !== "string") return "invalid";
+  const name = value.trim();
+  if (name.length < 2 || name.length > 20 || !/^[a-zA-Z0-9 _.-]+$/.test(name)) return "invalid";
+  const compactName = normalizeRunnerName(name);
+  const blockedWords = ["fuck", "shit", "bitch", "cunt", "dick", "pussy", "asshole", "bastard", "whore", "slut", "porn", "sex", "nigger", "faggot", "retard"];
+  return blockedWords.some((word) => compactName.includes(word)) ? "blocked" : "";
+}
+
+function normalizeRunnerName(value) {
+  const substitutions = { "0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t", "@": "a", "!": "i", "$": "s" };
+  return value.toLowerCase().replace(/[013457@!$]/g, (character) => substitutions[character]).replace(/[^a-z0-9]/g, "");
 }
 
 function readJsonBody(request) {

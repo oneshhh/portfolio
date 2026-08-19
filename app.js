@@ -759,10 +759,11 @@ function commandPlay() {
     <form class="runner-game__join" data-game-join autocomplete="off">
       <label for="runner-name">Choose your runner name</label>
       <div class="runner-game__join-row">
-        <input id="runner-name" data-game-name maxlength="20" required placeholder="e.g. cloud_runner" aria-describedby="runner-name-hint">
+        <input id="runner-name" data-game-name maxlength="20" required placeholder="e.g. cloud_runner" aria-describedby="runner-name-hint runner-name-error">
         <button type="submit">Enter to start</button>
       </div>
       <p id="runner-name-hint">Press <kbd>Enter</kbd> to begin. Jump with <kbd>Space</kbd>, <kbd>↑</kbd>, or a tap. A second press gives you one mid-air recovery jump.</p>
+      <p class="runner-game__name-error" id="runner-name-error" data-game-name-error hidden role="alert"></p>
     </form>
     <div class="runner-game__stage" hidden data-game-stage>
       <div class="runner-game__hud">
@@ -783,6 +784,7 @@ function commandPlay() {
     scores: wrapper.querySelector("[data-game-scores]"),
     join: wrapper.querySelector("[data-game-join]"),
     name: wrapper.querySelector("[data-game-name]"),
+    nameError: wrapper.querySelector("[data-game-name-error]"),
     stage: wrapper.querySelector("[data-game-stage]"),
     canvas: wrapper.querySelector("[data-game-canvas]"),
     player: wrapper.querySelector("[data-game-player]"),
@@ -795,12 +797,18 @@ function commandPlay() {
   game.elements.join.addEventListener("submit", (event) => {
     event.preventDefault();
     const name = game.elements.name.value.trim();
-    if (!name) {
+    const nameError = validateRunnerName(name);
+    if (nameError) {
+      showNameError(game, nameError);
       game.elements.name.focus();
       return;
     }
+    showNameError(game, "");
     game.playerName = name;
     startDeployDash(game);
+  });
+  game.elements.name.addEventListener("input", () => {
+    if (!validateRunnerName(game.elements.name.value.trim())) showNameError(game, "");
   });
   game.elements.jump.addEventListener("click", () => game.jump?.());
   game.elements.canvas.addEventListener("click", () => game.jump?.());
@@ -831,6 +839,27 @@ function getScoreApiUrl() {
   return isLocalPreview && window.location.port !== "3000"
     ? "http://localhost:3000/api/scores"
     : "/api/scores";
+}
+
+function validateRunnerName(name) {
+  if (name.length < 2 || name.length > 20) return "Use a runner name between 2 and 20 characters.";
+  if (!/^[a-zA-Z0-9 _.-]+$/.test(name)) return "Use letters, numbers, spaces, hyphens, underscores, or periods only.";
+
+  const compactName = name
+    .toLowerCase()
+    .replace(/[013457@!$]/g, (character) => ({ "0": "o", "1": "i", "3": "e", "4": "a", "5": "s", "7": "t", "@": "a", "!": "i", "$": "s" }[character]))
+    .replace(/[^a-z0-9]/g, "");
+  const blockedWords = ["fuck", "shit", "bitch", "cunt", "dick", "pussy", "asshole", "bastard", "whore", "slut", "porn", "sex", "nigger", "faggot", "retard"];
+  if (blockedWords.some((word) => compactName.includes(word))) {
+    return "Please choose a clean, professional runner name.";
+  }
+  return "";
+}
+
+function showNameError(game, message) {
+  game.elements.nameError.hidden = !message;
+  game.elements.nameError.textContent = message;
+  game.elements.name.setAttribute("aria-invalid", String(Boolean(message)));
 }
 
 function renderLeaderboard(game, scores) {
@@ -866,7 +895,14 @@ function startDeployDash(game) {
   game.elements.jump.hidden = true;
   game.elements.countdown.hidden = false;
   elements.input.disabled = true;
-  void runDeployCountdown(game);
+  void revealGameThenCountdown(game);
+}
+
+async function revealGameThenCountdown(game) {
+  game.elements.stage.scrollIntoView({ behavior: "smooth", block: "center" });
+  await delay(520);
+  if (state.runnerGame !== game || !game.preparing) return;
+  await runDeployCountdown(game);
 }
 
 async function runDeployCountdown(game) {

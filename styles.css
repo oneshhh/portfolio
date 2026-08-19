@@ -538,6 +538,7 @@ body {
 }
 
 .runner-game__join input:focus { border-color: var(--accent-strong); box-shadow: 0 0 0 2px rgba(157, 255, 135, 0.14); }
+.runner-game__join input[aria-invalid="true"] { border-color: var(--danger); box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.13); }
 
 .runner-game button {
   border: 1px solid var(--accent-strong);
@@ -555,6 +556,11 @@ body {
   color: #9db3c3;
   font-size: 0.78rem;
   line-height: 1.45;
+}
+
+.runner-game__join .runner-game__name-error {
+  margin-top: 0.55rem;
+  color: var(--danger);
 }
 
 .runner-game kbd {
