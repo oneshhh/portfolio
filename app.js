@@ -11,7 +11,7 @@ const profile = {
   github: "https://github.com/oneshhh",
   linkedin: "https://www.linkedin.com/in/vansh-sabharwal-12bb56249",
   blog: "https://carglimpses.com",
-  resumePdf: "VanshSabharwalResume.pdf",
+  resumePdf: "Vansh_Sabharwal_Resume.pdf",
   mrRobotIp: "192.251.68.254",
   summary: [
     "DevOps Engineer at GXT with a strong focus on cloud infrastructure, networking, security, and production-ready platforms.",
@@ -874,13 +874,25 @@ function renderLeaderboard(game, scores) {
 
   scores.slice(0, 8).forEach((entry, index) => {
     const item = document.createElement("li");
-    item.innerHTML = `<span class="runner-game__rank">${String(index + 1).padStart(2, "0")}</span>`;
+    const medal = ["gold", "silver", "bronze"][index];
+    item.classList.toggle("runner-game__score--medal", Boolean(medal));
+    const rank = document.createElement("span");
+    rank.className = "runner-game__rank";
+    if (medal) {
+      const crown = document.createElement("span");
+      crown.className = `runner-game__crown runner-game__crown--${medal}`;
+      crown.setAttribute("aria-label", `${index + 1}${index === 0 ? "st" : index === 1 ? "nd" : "rd"} place`);
+      crown.setAttribute("role", "img");
+      crown.innerHTML = "<span></span>";
+      rank.appendChild(crown);
+    }
+    rank.append(document.createTextNode(String(index + 1).padStart(2, "0")));
     const name = document.createElement("span");
     name.className = "runner-game__score-name";
     name.textContent = entry.name;
     const score = document.createElement("strong");
     score.textContent = String(entry.score).padStart(5, "0");
-    item.append(name, score);
+    item.append(rank, name, score);
     game.elements.scores.appendChild(item);
   });
 }
