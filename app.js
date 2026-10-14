@@ -14,8 +14,8 @@ const profile = {
   resumePdf: "Vansh_Sabharwal_Resume.pdf",
   mrRobotIp: "192.251.68.254",
   summary: [
-    "DevOps Engineer at GXT with a strong focus on cloud infrastructure, networking, security, and production-ready platforms.",
-    "I work across cloud, backend, and operational tooling, and I also contribute to products such as Dvar and Real Write that improve delivery, collaboration, and operational reliability."
+    "DevOps Engineer at GXT with a strong focus on cloud infrastructure, networking, security, and production-ready platforms. I created Dvar a intelligent and smart hiring platform that uses AI to recruit 60% faster and 30% more accurate workforce for compnaies.",
+    "I work across cloud, backend, and operational tooling, and I also contribute to products such as RealWrite and my own and other Open Source tools that improve delivery, collaboration, and operational reliability. My main aim is to help people with advanced tools that are free to use."
   ],
   strengths: [
     "Cloud infrastructure",
@@ -161,6 +161,21 @@ const profile = {
         "It brings together project creation, team coordination, chat, editorial review, timelines, assignments, and operational tracking so content work can move across the team with less friction.",
         "I created it from five years of experience in the writing industry and my own freelance background, where I saw how scattered communication and manual tracking slow down small teams.",
         "The goal is to make content operations easier, more transparent, and more connected for agencies that need structure without heavyweight enterprise tools."
+      ]
+    },
+    {
+      name: "keep-or-delete.txt",
+      title: "Keep or Delete",
+      badge: "OPEN SOURCE",
+      context: "Private offline photo and video organizer for Windows",
+      linkLabel: "GitHub repository",
+      linkUrl: "https://github.com/oneshhh/KeeporDelete",
+      stack: ["Open Source", "Windows Desktop", "Photo Organization", "Offline Face Recognition", "Electron", "Node.js", "JavaScript"],
+      summary: [
+        "Keep or Delete is a free, open-source Windows application I built to help people quickly organize large local collections of photos, videos, Apple Live Photos, and HEIC images.",
+        "It provides a fast Keep/Delete workflow, keyboard shortcuts, album filtering, reel-style video browsing, storage statistics, and a final Trash review so users can remove unwanted media safely.",
+        "I created it after discovering that my three-year photo backup had grown to 50 GB and was filled with unnecessary screenshots, memes, and images I no longer needed. Reviewing and deleting every file manually was slow, and I could not find a genuinely free app that solved the problem simply.",
+        "The app also includes optional offline face recognition for finding and grouping people. Everything runs locally on the computer without uploading personal media or requiring an internet connection, account, cloud service, or subscription."
       ]
     },
     {

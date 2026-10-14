@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Deploy Dash Score Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="score-admin-page">
+    <section class="score-admin-panel" aria-labelledby="score-admin-title">
+      <p class="runner-game__eyebrow">PRIVATE CONTROL PANEL</p>
+      <h1 id="score-admin-title">DEPLOY DASH SCORE MANAGER</h1>
+      <p class="score-admin-copy">Enter your administrator token to review or remove an inappropriate score. The token is never saved in this browser.</p>
+      <form id="admin-auth-form" class="score-admin-auth" autocomplete="off">
+        <label for="admin-token">Administrator token</label>
+        <div>
+          <input id="admin-token" type="password" required autocomplete="off">
+          <button type="submit">Load scores</button>
+        </div>
+      </form>
+      <p id="admin-status" class="score-admin-status" role="status"></p>
+      <div id="admin-scores" class="score-admin-scores" hidden></div>
+    </section>
+  </main>
+  <script>
+    const form = document.getElementById("admin-auth-form");
+    const tokenInput = document.getElementById("admin-token");
+    const status = document.getElementById("admin-status");
+    const scoresContainer = document.getElementById("admin-scores");
+    let token = "";
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      token = tokenInput.value;
+      await loadScores();
+    });
+
+    async function loadScores() {
+      setStatus("Loading score records…");
+      try {
+        const response = await fetch("/api/scores?admin=1", { headers: { "x-score-admin-token": token } });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "Unable to load scores.");
+        renderScores(payload.scores || []);
+        setStatus(`${payload.scores.length} score records loaded.`);
+      } catch (error) {
+        scoresContainer.hidden = true;
+        setStatus(error.message, true);
+      }
+    }
+
+    function renderScores(scores) {
+      scoresContainer.replaceChildren();
+      scoresContainer.hidden = false;
+      if (!scores.length) {
+        scoresContainer.textContent = "No score records found.";
+        return;
+      }
+      const list = document.createElement("ol");
+      scores.forEach((entry) => {
+        const item = document.createElement("li");
+        const details = document.createElement("span");
+        details.textContent = `${entry.name} — ${entry.score} points — ${new Date(entry.playedAt).toLocaleString()}`;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Delete score";
+        remove.addEventListener("click", () => deleteScore(entry));
+        item.append(details, remove);
+        list.appendChild(item);
+      });
+      scoresContainer.appendChild(list);
+    }
+
+    async function deleteScore(entry) {
+      if (!confirm(`Delete ${entry.name}'s score of ${entry.score}? This cannot be undone.`)) return;
+      setStatus("Deleting score…");
+      try {
+        const response = await fetch("/api/scores", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json", "x-score-admin-token": token },
+          body: JSON.stringify({ id: entry.id })
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "Unable to delete score.");
+        renderScores(payload.scores || []);
+        setStatus("Score deleted.");
+      } catch (error) {
+        setStatus(error.message, true);
+      }
+    }
+
+    function setStatus(message, isError = false) {
+      status.textContent = message;
+      status.classList.toggle("is-error", isError);
+    }
+  </script>
+</body>
+</html>

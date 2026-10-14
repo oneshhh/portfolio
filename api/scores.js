@@ -1,10 +1,11 @@
-const { get, list, put } = require("@vercel/blob");
+const { del, get, list, put } = require("@vercel/blob");
 const { randomUUID } = require("node:crypto");
 
 const SCORE_PREFIX = "deploy-dash/scores/";
 const MAX_LEADERBOARD_SCORES = 50;
 
 module.exports = async function handler(request, response) {
+  const url = new URL(request.url, `https://${request.headers.host || "localhost"}`);
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return sendJson(response, 503, {
       error: "Leaderboard storage is not configured. Create a Vercel Blob store for this project."
@@ -13,15 +14,32 @@ module.exports = async function handler(request, response) {
 
   if (request.method === "GET") {
     try {
-      return sendJson(response, 200, { scores: await readScores() });
+      const isAdminRequest = url.searchParams.get("admin") === "1";
+      if (isAdminRequest && !isAdmin(request)) return sendJson(response, 401, { error: "Administrator access required." });
+      return sendJson(response, 200, { scores: await readScores(isAdminRequest) });
     } catch (error) {
       console.error("Unable to read Deploy Dash scores:", error);
       return sendJson(response, 500, { error: "Unable to load the leaderboard." });
     }
   }
 
+  if (request.method === "DELETE") {
+    if (!isAdmin(request)) return sendJson(response, 401, { error: "Administrator access required." });
+    try {
+      const { id } = await readJsonBody(request);
+      if (typeof id !== "string" || !id.startsWith(SCORE_PREFIX) || !id.endsWith(".json") || id.includes("..")) {
+        return sendJson(response, 400, { error: "Invalid score record." });
+      }
+      await del(id);
+      return sendJson(response, 200, { scores: await readScores(true) });
+    } catch (error) {
+      console.error("Unable to delete Deploy Dash score:", error);
+      return sendJson(response, 500, { error: "Unable to delete the score." });
+    }
+  }
+
   if (request.method !== "POST") {
-    response.setHeader("Allow", "GET, POST");
+    response.setHeader("Allow", "GET, POST, DELETE");
     return sendJson(response, 405, { error: "Method not allowed" });
   }
 
@@ -52,18 +70,18 @@ module.exports = async function handler(request, response) {
   }
 };
 
-async function readScores() {
+async function readScores(includeIds = false) {
   const { blobs } = await list({ prefix: SCORE_PREFIX, limit: 1000 });
-  const entries = await Promise.all(blobs.map(readScoreEntry));
+  const entries = await Promise.all(blobs.map((blob) => readScoreEntry(blob, includeIds)));
   return sortScores(entries.filter(Boolean)).slice(0, MAX_LEADERBOARD_SCORES);
 }
 
-async function readScoreEntry(blob) {
+async function readScoreEntry(blob, includeId) {
   try {
     const result = await get(blob.url, { access: "private" });
     if (!result) return null;
     const parsed = JSON.parse(await new Response(result.stream).text());
-    return isValidScore(parsed) ? parsed : null;
+    return isValidScore(parsed) ? (includeId ? { ...parsed, id: blob.pathname } : parsed) : null;
   } catch (error) {
     console.warn(`Ignoring unreadable score entry: ${blob.pathname}`);
     return null;
@@ -117,4 +135,9 @@ function readJsonBody(request) {
 
 function sendJson(response, statusCode, payload) {
   response.status(statusCode).json(payload);
+}
+
+function isAdmin(request) {
+  const token = process.env.SCORE_ADMIN_TOKEN;
+  return Boolean(token) && request.headers["x-score-admin-token"] === token;
 }
