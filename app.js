@@ -14,8 +14,8 @@ const profile = {
   resumePdf: "Vansh_Sabharwal_Resume.pdf",
   mrRobotIp: "192.251.68.254",
   summary: [
-    "DevOps Engineer at GXT with a strong focus on cloud infrastructure, networking, security, and production-ready platforms. I created Dvar a intelligent and smart hiring platform that uses AI to recruit 60% faster and 30% more accurate workforce for compnaies.",
-    "I work across cloud, backend, and operational tooling, and I also contribute to products such as RealWrite and my own and other Open Source tools that improve delivery, collaboration, and operational reliability. My main aim is to help people with advanced tools that are free to use."
+    "DevOps Engineer at GXT with a strong focus on cloud infrastructure, networking, security, and production-ready platforms. I created Dvar, an AI-assisted hiring platform designed to help companies recruit faster and make more accurate hiring decisions.",
+    "Outside my core work, one of my hobbies is building open-source software and contributing to the open-source community. I enjoy creating practical tools for small, everyday problems, especially when suitable products are unavailable or too expensive, and releasing those solutions for others to use and improve."
   ],
   strengths: [
     "Cloud infrastructure",
@@ -133,6 +133,16 @@ const profile = {
       ]
     }
   ],
+  projectSections: {
+    openSource: {
+      title: "Open Source",
+      summary: [
+        "I have developed a passion for creating apps that solve small but meaningful problems, especially when a suitable product is not available or the existing options are too expensive for a simple task.",
+        "I build these solutions around problems I have experienced myself, then open-source them so other people can use, study, improve, and contribute to them.",
+        "This collection currently includes Real Write and KeeporDelete."
+      ]
+    }
+  },
   projects: [
     {
       name: "dvar.txt",
@@ -152,6 +162,7 @@ const profile = {
       name: "real-write.txt",
       title: "Real Write",
       badge: "OPEN SOURCE",
+      section: "openSource",
       context: "Self-hosted editorial operations platform",
       linkLabel: "GitHub repository",
       linkUrl: "https://github.com/oneshhh/writing",
@@ -165,14 +176,15 @@ const profile = {
     },
     {
       name: "keep-or-delete.txt",
-      title: "Keep or Delete",
+      title: "KeeporDelete",
       badge: "OPEN SOURCE",
+      section: "openSource",
       context: "Private offline photo and video organizer for Windows",
       linkLabel: "GitHub repository",
       linkUrl: "https://github.com/oneshhh/KeeporDelete",
       stack: ["Open Source", "Windows Desktop", "Photo Organization", "Offline Face Recognition", "Electron", "Node.js", "JavaScript"],
       summary: [
-        "Keep or Delete is a free, open-source Windows application I built to help people quickly organize large local collections of photos, videos, Apple Live Photos, and HEIC images.",
+        "KeeporDelete is a free, privacy-first Windows photo and video organizer for quickly sorting large local media libraries, removing unwanted files, grouping photos by people, and reclaiming storage space. Everything runs locally on your computer.",
         "It provides a fast Keep/Delete workflow, keyboard shortcuts, album filtering, reel-style video browsing, storage statistics, and a final Trash review so users can remove unwanted media safely.",
         "I created it after discovering that my three-year photo backup had grown to 50 GB and was filled with unnecessary screenshots, memes, and images I no longer needed. Reviewing and deleting every file manually was slow, and I could not find a genuinely free app that solved the problem simply.",
         "The app also includes optional offline face recognition for finding and grouping people. Everything runs locally on the computer without uploading personal media or requiring an internet connection, account, cloud service, or subscription."
@@ -438,10 +450,13 @@ function buildFileSystem(data) {
       file("experience.txt", experienceText)
     ]),
     dir("projects", [
-      link("dvar.link", "Dvar", data.projects[0].linkUrl),
-      link("real-write.link", "Real Write", data.projects[1].linkUrl),
-      link("netskopos.link", "NetSkopos", data.projects[2].linkUrl),
-      link("carglimpses.link", "CarGlimpses", data.projects[3].linkUrl)
+      ...data.projects
+        .filter((project) => project.linkUrl)
+        .map((project) => link(
+          project.name.replace(/\.txt$/i, ".link"),
+          project.title,
+          project.linkUrl
+        ))
     ]),
     dir("skills", [
       file("skills.txt", skillsText, {
@@ -1778,7 +1793,25 @@ function renderEntries(entries) {
 }
 
 function renderProjects(projects) {
+  let activeSection = null;
+
   projects.forEach((project, index) => {
+    if (index > 0) {
+      printSeparator();
+    }
+
+    if (project.section && project.section !== activeSection) {
+      const section = profile.projectSections?.[project.section];
+      if (section) {
+        printLine(section.title, "project-section-title");
+        section.summary.forEach((line) => printLine(line, "project-section-summary"));
+        printSeparator();
+      }
+      activeSection = project.section;
+    } else if (!project.section) {
+      activeSection = null;
+    }
+
     printLine(project.badge ? `${project.title} [${project.badge}]` : project.title, "project-title");
 
     if (project.context) {
@@ -1798,9 +1831,6 @@ function renderProjects(projects) {
       printOpenLinkLine(project.linkLabel || "Project", project.linkUrl, "click to open");
     }
 
-    if (index < projects.length - 1) {
-      printSeparator();
-    }
   });
 }
 
